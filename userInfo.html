@@ -1,0 +1,634 @@
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>UserInfo</title>
+  <style>
+		small{
+			font-size: 10px;
+		}
+		#messages li{
+			background-color: #f0f0f0;
+			border-radius: 5px;
+			margin-top: 5px;
+		}
+		.btn-file {
+			position: relative;
+			overflow: hidden;
+		}
+		.btn-file input[type=file] {
+			position: absolute;
+			top: 0;
+			right: 0;
+			min-width: 100%;
+			min-height: 100%;
+			font-size: 100px;
+			text-align: right;
+			filter: alpha(opacity=0);
+			opacity: 0;
+			outline: none;
+			background: white;
+			cursor: inherit;
+			display: block;
+		}
+		
+		li img{
+			height: 150px;
+			width: auto;
+			border: 1px solid #828282;
+			margin: 10px;
+		}
+	</style>
+  	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+<!--===============================================================================================-->
+
+  
+  
+  <link rel="stylesheet" href="css/style.css" />
+ 
+</head>
+<body>
+
+<button class="login100-form-btn" id="signOut" style="width: 10%;position: absolute; top: 20px; right: 20px; font-size: 20px;">Sign Out</button>
+<button class="login100-form-btn" id="myItems" style="width: 10%;position: absolute; top: 20px; right: 160px; font-size: 20px;">My Items</button>
+<button class="login100-form-btn" id="home" style="width: 10%;position: absolute; top: 20px; right: 300px; font-size: 20px;">Home</button>
+
+
+
+
+<div style = "position: absolute; top: 20px; left:2px">
+<img id = "profile_image" src ="images/profile.png" style = "margin-left: 15px; width: 250px; height: 250px ; border-style: solid; border-color: #00b300;">
+</img>
+</div>
+
+<div style="position: relative ; top: 272px;">
+<label id="uploadBtn" class = "upload-image-form-btn" class="btn btn-primary btn-file" style=";margin-left: 27px; width: 230px;">
+				update image 
+<input type="file" accept="image/jpeg,image/png" style="display: none;" >
+</label>
+</div>
+
+
+
+<div style="position: absolute; top: 100px; left: 300px">
+<div id="itemsWindow" style=" ;visibility: hidden ;height: 500px ;width:600px; margin:0 auto;top: 100px; border-style: solid; border-color: #00b300;">
+<div id="myItemsList" >    
+<button class="login100-form-btn" id="addItem" style="width: 30%;position: absolute; top: 20px; right: 20px; font-size: 20px;">Add Item</button>
+<button class="login100-form-btn" id="cancelMyItemList" style="width: 30%;position: absolute; top: 440px; right: 20px; font-size: 20px;">Cancel</button>
+
+<div class="col-md-8"style="height: 495px !Important; overflow-y: scroll;border: 1px splid #f0f0f0;">
+			<ul class="list-group" id="items">
+			<li style="margin-top: 10%; border: none; text-align: center; font-size: 40px;">Loading...</li>
+			</ul>
+		</div>
+		</div>    
+
+		<div id="addItemMenu" style ="position: absolute; top: 0px; visibility: hidden ;">
+		<div style = "position: absolute; top: 0px; left: 0px; ">
+
+		<img id = "product_image" src ="images/profile.png" style = "margin-left: 15px;margin-top: 15px; width: 250px; height: 250px ; border-style: solid; border-color: #00b300;">
+		</img>
+		</div>
+		<div style="position: relative ; top: 270px; ">
+		<label id="uploadProductImageBtn" class = "upload-image-form-btn" class="btn btn-primary btn-file" style=";margin-left: 27px; width: 230px;">
+				add image 
+		<input type="file" accept="image/jpeg,image/png" style="display: none;" >
+		</label>
+		</div>
+		
+		<div style ="position: absolute; top: 0px;left: 280px">
+		<div class="wrap-input100 validate-input m-t-85 m-b-35" style="margin: 20px; width: 285px">
+			<input class="input100" type="text" name="Product Name" id="productHeader">
+			<span class="focus-input100" data-placeholder="Product Name"></span>
+		</div>
+		</div>	
+					<div  style ="position: absolute; top: 150px;left: 280px">
+				<h4>Additional Info</h4>
+				<textarea id="productTextArea"></textarea>
+
+					</div>
+					
+					
+		<button class="login100-form-btn" id="cancelAddItem" style="width: 150px;position: absolute;left:20px; top: 440px; font-size: 20px;">Cancel</button>
+		<button class="login100-form-btn" id="saveAddItem" style="width: 150px;position: absolute;left:420px; top: 440px; font-size: 20px;">Save</button>
+
+		</div>
+
+
+</div>
+</div>
+
+
+
+
+
+<script src="js/json3.min.js"></script>
+<script src="js/jquery-1.10.1.min.js"></script>
+<script src="js/chessboard.js"></script>
+
+
+<!--===============================================================================================-->
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/daterangepicker/moment.min.js"></script>
+	<script src="vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/countdowntime/countdowntime.js"></script>
+<!--===============================================================================================-->
+	<script src="js/main.js"></script>
+
+
+
+
+<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase.js"></script>
+<script>
+
+
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBXHoJ7NuaMKAHJHAlPj7uMH8dAG0PQ7Bg",
+    authDomain: "cheaptrade-d4860.firebaseapp.com",
+    databaseURL: "https://cheaptrade-d4860.firebaseio.com",
+    projectId: "cheaptrade-d4860",
+    storageBucket: "cheaptrade-d4860.appspot.com",
+    messagingSenderId: "943938559788"
+  };
+  firebase.initializeApp(config);
+  var itemsWindow=true;
+  var email;
+  firebase.auth().onAuthStateChanged(function(user) {
+			if (user) {
+			email=user.email;
+			getProfileImage(email);
+			console.log("eamillllll " + email);
+				//still connected
+			} else {
+				location.href = "login.html";
+			}
+		});
+	
+ // console.log(firebase.auth().currentUser); //get the user info any time
+  
+  $("#signOut").click(function(){
+	firebase.auth().signOut().then(function() {
+		// Sign-out successful.
+	}).catch(function(error) {
+		// An error happened.
+	});
+  });
+  
+  $("#home").click(function(){
+  location.href = "index.html";
+	
+  });
+  
+	$("#myItems").click(function(){
+	setVisibilty('itemsWindow');
+	if(itemsWindow === true)
+	{
+	setVisibiltyTo('myItemsList','visible');
+	getItemList();
+	setVisibiltyTo('addItemMenu','hidden');
+	itemsWindow=false;
+	}
+	else
+	{
+	setVisibiltyTo('myItemsList','hidden');
+	setVisibiltyTo('addItemMenu','hidden');
+	itemsWindow=true;
+	}
+  });
+  
+  
+  $("#addItem").click(function(){
+	setVisibiltyTo('myItemsList','hidden');
+	setVisibiltyTo('addItemMenu','visible');
+	
+	
+	var img = document.getElementById("product_image");
+	img.src = "images/profile.png";
+	
+  });
+  
+  function getItemList()
+  {
+  var userId = firebase.auth().currentUser.uid;
+  var messagesRef = firebase.database().ref('products_info');
+  
+  messagesRef.child(userId).on('value', function(data){ 
+			$("#items").empty();
+			data.forEach(function(childSnapshot) {
+			// console.log("baba");
+  
+				let childData = childSnapshot.val();
+				//console.log(childData);
+				/*if(childData.type == "image"){
+					$("#messages").append('<li class="list-group-item">' 
+						+ "<small>" + childData.sender + "</small><br />" 
+						+ "<img src='" + childData.message + "'/><br />"
+						+ "<small>" + childData.timestamp + "</small>"
+					+ '</li>');
+				} else{*/
+				//+ "<img src='" + stam(userId,childData.number) + "'/><br />"
+					var img_id = 'uploadedProductListImage'+childData.number;
+					var button_id='delete_button'+childData.number;
+					var style = "width: 250px; height: 250px ; border-style: solid; border-color: #00b300";
+					var Fun = 'doFunction';
+					$("#items").append('<li class="list-group-item">' 
+						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+style+"' /><br />"
+						+ "<small>" + childData.header + "</small><br />" 
+						+ "<h5 style='margin: 5px 10px !important;'>" + childData.moreInfo + "</h5>"
+						+"<button id='"+button_id+"'>delete item</button>"
+					+ '</li>');
+				//}
+								 
+				// document.getElementById(button_id).setAttribute('onclick','deleteProduct("'+childData.number+'",'+userId+')');
+				document.getElementById(button_id).setAttribute('onclick','deleteProduct("'+childData.number+'")');
+
+				
+				if(childData.hasImage == 1)
+					setListImage(userId,childData.number);
+			  });
+			$("#items").parent().scrollTop($('#items').height());
+		});
+  
+  
+  
+  
+  
+  
+
+  }
+  
+  function deleteProduct(product_number)
+  {
+  	console.log('doFunction:  ' + product_number);
+	
+   var userId = firebase.auth().currentUser.uid;
+   var messagesRef = firebase.database().ref('products_info');
+   messagesRef.child(userId + '/' + product_number).remove();
+   
+   var storageRef = firebase.storage().ref();
+	storageRef.child('product_images/'+userId+'/'+product_number).delete().then(function() {
+  // File deleted successfully
+}).catch(function(error) {
+  // Uh-oh, an error occurred!
+});
+	
+	
+	
+					
+	getItemList();		
+
+  }
+  
+  function setListImage(userId,number) {
+	//$("#uploadBtn").text('uploading...');
+			var storageRef = firebase.storage().ref();
+			var email = firebase.auth().currentUser.email;
+			
+			var name = storageRef.child('product_images/'+userId+'/'+number);
+					name.getDownloadURL().then(function(url){
+					console.log('url: ' + url);
+					var img = document.getElementById('uploadedProductListImage'+number);
+
+					if(url != null){
+						img.src = url;
+						}
+						else{
+						//wait(2500);
+						storageRef.child('product_images/'+userId+'/'+number).on("value", function(snapshot) {
+						name.getDownloadURL().then(function(url){
+						img.src = url;
+						});
+						
+						
+						});
+						}
+						
+					}).catch(function(err){ /*console.log(err)*//*wait(2500);stam2(userId,number)*/; });
+			}
+			
+  
+  
+  function stam2(userId,number) {
+			var storageRef = firebase.storage().ref();
+			var email = firebase.auth().currentUser.email;
+			
+			var name = storageRef.child('product_images/'+userId+'/'+number);
+					name.getDownloadURL().then(function(url){
+						if(url != null){
+						var img = document.getElementById('uploadedProductListImage'+number);
+						img.src = url;
+						}
+					}).catch(function(err){ console.log(err) });
+			}
+  
+  
+  
+  
+  	function getProductImage(userId,number)
+	{
+	console.log("userId: " + userId);
+		console.log("number: " + number);
+		var str = 'product_images/' + userId +'/' + number;
+		console.log("str: " + str);
+
+return 'aa';
+	/*var storage  = firebase.storage();
+	var pathReference = storage.ref('product_images/' + userId +'/' + number);
+	pathReference.child().getDownloadURL().then(function(url) {
+	console.log("url: " + url);
+	return url;
+}).catch(function(error) {
+  // Handle any errors
+});*/
+	}
+  
+  
+  function wait(ms){
+   var start = new Date().getTime();
+   var end = start;
+   while(end < start + ms) {
+     end = new Date().getTime();
+  }
+}
+  
+  function setVisibilty(id) {
+  var x = document.getElementById(id);
+  if (x.style.visibility === 'hidden') {
+    x.style.visibility = 'visible';
+  } else {
+    x.style.visibility = 'hidden';
+  }
+}
+
+ function setVisibiltyTo(id,vis) {
+  var x = document.getElementById(id);
+    x.style.visibility = vis;
+}
+
+	function getProfileImage(email)
+	{
+	var storage  = firebase.storage();
+	var pathReference = storage.ref("profile_images");
+	pathReference.child(email).getDownloadURL().then(function(url) {
+
+  var img = document.getElementById('profile_image');
+  img.src = url;
+}).catch(function(error) {
+  // Handle any errors
+});
+	}
+	
+	
+	
+	$("#cancelMyItemList").click(function(){
+	setVisibilty('itemsWindow');
+	if(itemsWindow === true)
+	{
+	setVisibiltyTo('myItemsList','visible');
+	setVisibiltyTo('addItemMenu','hidden');
+	itemsWindow=false;
+	}
+	else
+	{
+	setVisibiltyTo('myItemsList','hidden');
+	setVisibiltyTo('addItemMenu','hidden');
+	itemsWindow=true;
+	}
+  });
+	
+	
+	
+	$("#cancelAddItem").click(function(){
+	setVisibiltyTo('myItemsList','visible');
+	setVisibiltyTo('addItemMenu','hidden');
+  });
+	
+	
+	
+
+</script>
+
+<script>
+	var tempImage = null;//getDefaultProductImage();
+	var buttonPressed = 0;
+
+	$(document).ready(function(){
+	
+	
+	$("#uploadBtn").click(function(){
+	buttonPressed = 1;
+	});
+	
+	$("#uploadProductImageBtn").click(function(){
+	buttonPressed = 2;
+	});
+	
+		$("input[type='file']").on('change', function(e){
+			if(e.target.files.length == 0){
+				console.log('cancelled');
+				return;
+			}
+			if(buttonPressed===1){
+				updateProfileImage(e);
+				buttonPressed = 0;
+			}
+			
+			if(buttonPressed===2){
+			tempImage = e;
+			handleProductImage(e);
+			buttonPressed = 0;
+			}
+			
+			});
+	});
+	
+	
+	
+	function updateProfileImage(e) {
+	//$("#uploadBtn").text('uploading...');
+			var storageRef = firebase.storage().ref();
+			var email = firebase.auth().currentUser.email;
+			
+			var name = storageRef.child("profile_images/"+email)
+
+			name.put(e.target.files[0]).then(function(snapshot){
+					name.getDownloadURL().then(function(url){
+						var img = document.getElementById('profile_image');
+						img.src = url;
+						//$("#uploadBtn").text('send a file');
+						$("input[type='file']").val(null);
+					}).catch(function(err){ console.log(err); });
+			}).catch(function(err){ console.log(err); /*$("#uploadBtn").text("didn't work out.. try again!")*/;});
+		}
+  
+  
+  
+  
+  
+  function updateProductImage(e, productCount) {
+			var storageRef = firebase.storage().ref();
+			//var email = firebase.auth().currentUser.email;
+			var userId = firebase.auth().currentUser.uid;
+
+			
+			var name = storageRef.child("product_images/"+userId+"/"+productCount);
+
+			name.put(e.target.files[0]).then(function(snapshot){
+					name.getDownloadURL().then(function(url){
+					
+						$("input[type='file']").val(null);
+					}).catch(function(err){ console.log(err); });
+			}).catch(function(err){ console.log(err);});
+			
+		}
+  
+  
+  
+  
+  function handleProductImage(e) {
+	//$("#uploadProductImageBtn").text('uploading...');
+			var storageRef = firebase.storage().ref();
+			var email = firebase.auth().currentUser.email;
+			
+			var name = storageRef.child("temp_image/"+email)
+
+			name.put(e.target.files[0]).then(function(snapshot){
+					name.getDownloadURL().then(function(url){
+						var img = document.getElementById('product_image');
+						img.src = url;
+						//$("#uploadProductImageBtn").text('send a file');
+					//	$("input[type='file']").val(null);
+					}).catch(function(err){ console.log(err); });
+			}).catch(function(err){ console.log(err); /*$("#uploadProductImageBtn").text("didn't work out.. try again!")*/;});
+		
+  
+  
+  }
+  
+  $("#saveAddItem").click(function(){
+   
+  var userId = firebase.auth().currentUser.uid;
+  //var root = firebase.database().ref();
+  var productCount = 0;//root.child("productCount/"+userId);
+  
+  
+  
+  firebase.database().ref('productCount/' + userId).once('value').then(function(snapshot) 
+  {
+  console.log("productCount: " + snapshot.val());
+  if(snapshot.val() != null)
+  {
+  productCount = snapshot.val(); 
+  productCount = productCount + 1;
+  firebase.database().ref('productCount/' + userId).set(productCount);
+  }
+  else
+  {
+  productCount = 1;
+  firebase.database().ref('productCount/' + userId).set(productCount);
+  }
+
+  var hasImage = 0;
+  if (tempImage != null)
+  hasImage = 1;
+  
+  
+  var info ={
+  header : document.getElementById('productHeader').value,
+  moreInfo : document.getElementById('productTextArea').value,
+  number: productCount,
+  hasImage: hasImage
+  }
+  firebase.database().ref('products_info/' + userId + '/' + productCount ).set(info);
+  
+  if(tempImage != null)
+  {
+    console.log("tempImage != null: ");
+
+  updateProductImage(tempImage,productCount);
+  }
+  
+  backToMenu();
+  
+});
+  
+  
+  
+  
+});
+  
+	function backToMenu()
+	{
+    setVisibiltyTo('myItemsList','visible');
+	setVisibiltyTo('addItemMenu','hidden');
+	tempImage = null;
+	document.getElementById('productHeader').value = "";
+	document.getElementById('productTextArea').value = "";
+	document.getElementById('product_image').src = "images/profile.png";
+	wait(3500);
+	getItemList();
+
+	}
+  
+function getDefaultProductImage()
+	{
+	var storage  = firebase.storage();
+	var pathReference = storage.ref("default_product_image");
+	pathReference.child('profile.png').getDownloadURL().then(function(url) {
+
+  return url;
+}).catch(function(error) {
+  // Handle any errors
+});
+	}
+	
+	
+</script>
+
+<script>
+
+
+
+
+
+
+</script>
+
+
+
+</body>
+</html>

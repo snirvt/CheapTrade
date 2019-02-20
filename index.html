@@ -1,0 +1,341 @@
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>Home</title>
+  	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+<!--===============================================================================================-->
+
+  
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<script src="js/chess.js"></script>
+<button class="login100-form-btn" id="signOut" style="width: 10%;position: absolute; top: 20px; right: 20px; font-size: 20px;">Sign Out</button>
+<button class="login100-form-btn" id="userInfo" style="width: 10%;position: absolute; top: 20px; right: 160px; font-size: 20px;">My Info</button>
+<button class="login100-form-btn" id="notificationsButton" style="width: 15%;position: absolute; top: 20px; right: 300px; font-size: 20px;">Notifications</button>
+<button class="login100-form-btn" id="serachSellerButton" style="width: 15%;position: absolute; top: 20px; left: 20px; font-size: 20px;">Search Seller</button>
+
+
+
+<div style="position: absolute; top: 100px; right: 250px">
+<div id="notificationWindow" style=" ;visibility: hidden ;height: 500px ;width:300px; margin:0 auto;top: 100px; border-style: solid; border-color: #00b300;">
+<div id="notificationsList" style=" ;visibility: hidden">    
+<div class="col-md-8"style="height: 495px !Important; overflow-y: scroll;border: 1px splid #f0f0f0;">
+			<ul class="list-group" id="notifications">
+			<li style="margin-top: 10%; border: none; text-align: center; font-size: 40px;">Loading...</li>
+			</ul>
+		</div>
+		</div>   
+		</div>
+</div>
+
+
+
+
+<div style="position: absolute; top: 100px; left: 300px;">
+<div id="serachSellerWindow" style=" ;visibility: hidden ;height: 500px ;width:600px; margin:0 auto;top: 100px; border-style: solid; border-color: #00b300;">
+
+		<div class="wrap-input100 validate-input m-t-85 m-b-35" style="margin: 20px; width: 285px">
+			<input class="input100" type="text" name="Product Name" id="sellerNameInput" onfocus="if(this.value == 'Enter Name') { this.value = ''; }" value="Enter Name"">
+			<span class="focus-input100" data-placeholder=""></span>
+		</div>
+		
+		<button class="login100-form-btn" id="serachSellerOkButton" style="width: 15%;position: absolute; top: 20px; right: 20px; font-size: 20px;">Search</button>
+
+<div id="sellersList" style=" ;visibility: hidden">    
+<div class="col-md-8"style="height: 495px !Important; overflow-y: scroll;border: 1px splid #f0f0f0;">
+			<ul class="list-group" id="sellers">
+			<li style="margin-top: 10%; border: none; text-align: center; font-size: 40px;">Loading...</li>
+			</ul>
+		</div>
+		</div>   
+		</div>
+		</div>
+
+
+</body>
+
+
+
+
+
+
+<!--===============================================================================================-->
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/daterangepicker/moment.min.js"></script>
+	<script src="vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/countdowntime/countdowntime.js"></script>
+<!--===============================================================================================-->
+	<script src="js/main.js"></script>
+
+
+
+
+
+<script src="js/json3.min.js"></script>
+<script src="js/jquery-1.10.1.min.js"></script>
+
+
+<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBXHoJ7NuaMKAHJHAlPj7uMH8dAG0PQ7Bg",
+    authDomain: "cheaptrade-d4860.firebaseapp.com",
+    databaseURL: "https://cheaptrade-d4860.firebaseio.com",
+    projectId: "cheaptrade-d4860",
+    storageBucket: "cheaptrade-d4860.appspot.com",
+    messagingSenderId: "943938559788"
+  };
+  firebase.initializeApp(config);
+  
+  firebase.auth().onAuthStateChanged(function(user) {
+			if (user) {
+				//still connected
+			} else {
+				location.href = "login.html";
+			}
+		});
+		
+  console.log(firebase.auth().currentUser); //get the user info any time
+  
+  $("#signOut").click(function(){
+	firebase.auth().signOut().then(function() {
+		// Sign-out successful.
+	}).catch(function(error) {
+		// An error happened.
+	});
+  });
+  
+  $("#userInfo").click(function(){
+  location.href = "userInfo.html";
+	
+  });
+  
+  
+  searchSellerFlag = true;
+  
+  $("#serachSellerButton").click(function(){
+	setVisibilty('serachSellerWindow');
+	document.getElementById('sellersList').style.visibility='hidden';
+	document.getElementById("sellerNameInput").value="Enter Name";
+  });
+  
+  
+  
+  
+  $("#notificationsButton").click(function(){
+	setVisibilty('notificationWindow');
+	getNotificationsList();
+	document.getElementById('notificationsList').style.visibility = 'visible';
+	
+	
+	//document.getElementById('sellersList').style.visibility='hidden';
+	//document.getElementById("sellerNameInput").value="Enter Name";
+  });
+  
+  
+  $("#serachSellerOkButton").click(function(){
+  
+  var Seller_name = document.getElementById('sellerNameInput').value;
+  console.log(Seller_name);
+   
+  getSellerList(Seller_name);
+  document.getElementById('sellersList').style.visibility = 'visible';
+  
+  });
+  
+  
+  function setVisibilty(id) {
+  var x = document.getElementById(id);
+  if (x.style.visibility === 'hidden') {
+    x.style.visibility = 'visible';
+  } else {
+    x.style.visibility = 'hidden';
+  }
+}
+  
+  
+  function equals(str1 , str2)
+  {
+  if(str1 == null || str2 == null || str1=='undefined' || str2 =='undefined')
+  return false;
+  if(str1.localeCompare(str2) == 0)
+	return true;
+  else
+	return false;
+  }
+  
+  
+  
+  function setListImage(email,img_id) {
+	//$("#uploadBtn").text('uploading...');
+			var storageRef = firebase.storage().ref('profile_images');
+			//var email = firebase.auth().currentUser.email;
+			
+			var name = storageRef.child(email);
+					name.getDownloadURL().then(function(url){
+					console.log('url: ' + url);
+					var img = document.getElementById(img_id);
+
+					if(url != null){
+						img.src = url;
+						}
+						/*else{
+						//wait(2500);
+						storageRef.child('profile_images/'+userId+'/'+number).on("value", function(snapshot) {
+						name.getDownloadURL().then(function(url){
+						img.src = url;
+						});
+						
+						
+						});
+						}*/
+						
+					}).catch(function(err){ /*console.log(err)*//*wait(2500);stam2(userId,number)*/; });
+			}
+  
+  
+  function moveToPage(page)
+  {
+  window.location.href = page;
+  }
+  
+  
+  
+  
+  
+  
+    function getNotificationsList()
+  {
+  var userId = firebase.auth().currentUser.uid;
+  var messagesRef = firebase.database().ref();
+  var count = 0;
+	messagesRef.child('notifications/' + userId +'/friend_requests').on('value', function(data){ 
+	console.log('child: ', data);
+	$("#sellers").empty();
+		data.forEach(function(childSnapshot) {
+		let childData = childSnapshot.val();
+		//if(equals(childData.email,Seller_name) || equals(childData.first_name,Seller_name) || equals(childData.last_name,Seller_name))
+		//{
+			count = count + 1;
+			console.log('kaka: ', childSnapshot);
+			
+			var style = "width: 150px; height: 150px ; border-style: solid; border-color: #00b300";
+			var img_id = 'FriendImage' + count;
+			var button_id = 'visitorView.html' + '#' + childData.uid;
+			var listClass="list-group-item";
+			$("#notifications").append("<button id='"+button_id+"'><li class='"+listClass+"'>"
+						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+style+"' /><br />"
+						+ "<small>" + childData.email + "</small><br />" 
+						+ "<small>" + childData.first_name + ' ' + childData.last_name + "</small><br />" 
+						//+"<button id='"+button_id+"'>click</button>"
+					+ '</li></button>');
+			
+			setListImage(childData.email,img_id);
+			document.getElementById(button_id).setAttribute('onclick','moveToPage("'+button_id+'")');
+
+		//}
+		
+		});
+	  $("#notifications").parent().scrollTop($('#notifications').height());
+	});
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+   function getSellerList(Seller_name)
+  {
+  
+  //display: none will make div disaapear
+  var userId = firebase.auth().currentUser.uid;
+  var messagesRef = firebase.database().ref();
+  var count = 0;
+	messagesRef.child('users_info').on('value', function(data){ 
+	console.log('child: ', data);
+	$("#sellers").empty();
+		data.forEach(function(childSnapshot) {
+		let childData = childSnapshot.val();
+		if(equals(childData.email,Seller_name) || equals(childData.first_name,Seller_name) || equals(childData.last_name,Seller_name))
+		{
+			count = count + 1;
+			console.log('kaka: ', childSnapshot);
+			
+			var style = "width: 250px; height: 250px ; border-style: solid; border-color: #00b300";
+			var img_id = 'SellerListImage' + count;
+			var button_id = 'visitorView.html' + '#' + childData.uid;
+			var listClass="list-group-item";
+			$("#sellers").append("<button id='"+button_id+"'><li class='"+listClass+"'>"
+						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+style+"' /><br />"
+						+ "<small>" + childData.email + "</small><br />" 
+						+ "<small>" + childData.first_name + ' ' + childData.last_name + "</small><br />" 
+						//+"<button id='"+button_id+"'>click</button>"
+					+ '</li></button>');
+			
+			setListImage(childData.email,img_id);
+			document.getElementById(button_id).setAttribute('onclick','moveToPage("'+button_id+'")');
+
+		}
+		
+		});
+	  $("#sellers").parent().scrollTop($('#sellers').height());
+	});
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</script>
+
+
+
+</body>
+</html>
