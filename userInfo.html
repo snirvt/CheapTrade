@@ -75,7 +75,8 @@
 
 <button class="login100-form-btn" id="signOut" style="width: 10%;position: absolute; top: 20px; right: 20px; font-size: 20px;">Sign Out</button>
 <button class="login100-form-btn" id="myItems" style="width: 10%;position: absolute; top: 20px; right: 160px; font-size: 20px;">My Items</button>
-<button class="login100-form-btn" id="home" style="width: 10%;position: absolute; top: 20px; right: 300px; font-size: 20px;">Home</button>
+<button class="login100-form-btn" id="wishList" style="width: 10%;position: absolute; top: 20px; right: 300px; font-size: 20px;">Wish List</button>
+<button class="login100-form-btn" id="home" style="width: 10%;position: absolute; top: 20px; right: 440px; font-size: 20px;">Home</button>
 
 
 
@@ -91,10 +92,60 @@
 <input type="file" accept="image/jpeg,image/png" style="display: none;" >
 </label>
 </div>
+<div style="position: relative ; top: 300px;">
+<div class="col-md-8"style="left:30px; width: 250px;height: 350px !Important; overflow-y: scroll;border: 1px splid #f0f0f0;">
+			<ul class="list-group" id="friends">
+			<li style="margin-top: 10%; border: none; text-align: center; font-size: 20px;">Loading...</li>
+			</ul>
+		</div>
+</div>
 
 
 
-<div style="position: absolute; top: 100px; left: 300px">
+
+
+<div id="wishWindowParent" style="position: absolute; top: 100px; left: 300px; display: none">
+<div id="wishWindow" style=" ;visibility: hidden ;height: 500px ;width:600px; margin:0 auto;top: 100px; border-style: solid; border-color: #00b300;">
+<div id="myWishList" >    
+<button class="login100-form-btn" id="addWishItem" style="width: 30%;position: absolute; top: 20px; right: 20px; font-size: 20px;">Add Item</button>
+<button class="login100-form-btn" id="cancelMyWishList" style="width: 30%;position: absolute; top: 440px; right: 20px; font-size: 20px;">Cancel</button>
+
+<div class="col-md-8"style="height: 495px !Important; overflow-y: scroll;border: 1px splid #f0f0f0;">
+			<ul class="list-group" id="wishes">
+			<li style="margin-top: 10%; border: none; text-align: center; font-size: 40px;">Loading...</li>
+			</ul>
+		</div>
+		</div>    
+
+		<div id="addWishMenu" style ="position: absolute; top: 0px; visibility: hidden ;">
+		
+		<div style ="position: absolute; top: 0px;left: 280px">
+		
+
+		
+		<div class="wrap-input100 validate-input m-t-85 m-b-35" style="margin: 20px; width: 285px">
+		<input class="input100" type="text" name="Product Name" id="wishHeader" onfocus="if(this.value == 'Product Name') { this.value = ''; }" value="Product Name"">
+			<span class="focus-input100" data-placeholder=""></span>
+		</div>
+		</div>	
+				
+					
+					
+		<button class="login100-form-btn" id="cancelAddWish" style="width: 150px;position: absolute;left:20px; top: 440px; font-size: 20px;">Cancel</button>
+		<button class="login100-form-btn" id="saveAddWish" style="width: 150px;position: absolute;left:420px; top: 440px; font-size: 20px;">Save</button>
+
+		</div>
+
+
+</div>
+</div>
+
+
+
+
+
+
+<div id="itemsWindowParent" style="position: absolute; top: 100px; left: 300px; display: none">
 <div id="itemsWindow" style=" ;visibility: hidden ;height: 500px ;width:600px; margin:0 auto;top: 100px; border-style: solid; border-color: #00b300;">
 <div id="myItemsList" >    
 <button class="login100-form-btn" id="addItem" style="width: 30%;position: absolute; top: 20px; right: 20px; font-size: 20px;">Add Item</button>
@@ -186,12 +237,14 @@
   };
   firebase.initializeApp(config);
   var itemsWindow=true;
+  var wishWindow = true;
   var email;
   firebase.auth().onAuthStateChanged(function(user) {
 			if (user) {
 			email=user.email;
 			getProfileImage(email);
 			console.log("eamillllll " + email);
+			showFriendsList(user.uid);
 				//still connected
 			} else {
 				location.href = "login.html";
@@ -199,6 +252,60 @@
 		});
 	
  // console.log(firebase.auth().currentUser); //get the user info any time
+  
+  
+  
+  
+  function showFriendsList(userId)
+  {
+  
+  console.log('showFriendsList', userId);
+  
+  
+  var messagesRef = firebase.database().ref('friends_list');
+  var users_info = firebase.database().ref('users_info');
+
+  messagesRef.child(userId).on('value', function(data){ 
+			$("#friends").empty();
+			data.forEach(function(childSnapshot) {  
+				let childData = childSnapshot.val();
+					var friend_uid =  childData.uid;
+					
+					users_info.child(friend_uid).on('value', function(dataData){
+					let childDataData = dataData.val();
+
+					var friend_email = childDataData.email;
+					var img_id = 'FriendListImage'+friend_uid;
+					var style = "width: 100px; height: 100px ; border-style: solid; border-color: #00b300";
+					var button_id = 'visitorView.html' + '#' + friend_uid;
+					var listClass = "list-group-item";
+					
+					$("#friends").append("<button id='"+button_id+"'><li class='"+listClass+"'>"
+						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+style+"' /><br />"
+						+ "<small>" + childDataData.first_name + ' ' + childDataData.last_name + "</small><br />" 
+						+ '</li></button>');
+				
+				var storage_path = 'profile_images/'+friend_email;
+				var data_path = img_id;
+					setListImage(storage_path, data_path);
+					document.getElementById(button_id).setAttribute('onclick','moveToPage("'+button_id+'")');
+					
+					});		
+			$("#friends").parent().scrollTop($('#friends').height());
+		});
+		});
+  
+  
+  
+  
+  }
+  
+  
+  function moveToPage(page)
+  {
+  window.location.href = page;
+  }
+  
   
   $("#signOut").click(function(){
 	firebase.auth().signOut().then(function() {
@@ -214,7 +321,13 @@
   });
   
 	$("#myItems").click(function(){
+	
+	if(wishWindow==false)
+		$("#wishList").click();
+	
+	
 	setVisibilty('itemsWindow');
+	setDisplay('itemsWindowParent');
 	if(itemsWindow === true)
 	{
 	setVisibiltyTo('myItemsList','visible');
@@ -230,6 +343,38 @@
 	}
   });
   
+  $("#wishList").click(function(){
+	if(itemsWindow==false)
+		$("#myItems").click();
+	setVisibilty('wishWindow');
+	setDisplay('wishWindowParent');
+
+	if(wishWindow === true)
+	{
+	setVisibiltyTo('myWishList','visible');
+	getWishList();
+	setVisibiltyTo('addWishMenu','hidden');
+	wishWindow=false;
+	}
+	else
+	{
+	setVisibiltyTo('myWishList','hidden');
+	setVisibiltyTo('addWishMenu','hidden');
+	wishWindow=true;
+	}
+  });
+  
+  
+  
+  function setDisplay(id) {
+  var x = document.getElementById(id);
+  if (x.style.display === 'none') {
+    x.style.display = 'block';
+  } else {
+    x.style.display = 'none';
+  }
+}
+  
   
   $("#addItem").click(function(){
 	setVisibiltyTo('myItemsList','hidden');
@@ -240,6 +385,45 @@
 	img.src = "images/profile.png";
 	
   });
+  
+  $("#addWishItem").click(function(){
+	setVisibiltyTo('myWishList','hidden');
+	setVisibiltyTo('addWishMenu','visible');
+	document.getElementById("wishHeader").value="Product Name";	
+  });
+  
+  
+  
+  
+  function getWishList()
+  {
+  var userId = firebase.auth().currentUser.uid;
+  var messagesRef = firebase.database().ref('wishList');
+  
+  messagesRef.child(userId).on('value', function(data){ 
+			$("#wishes").empty();
+			data.forEach(function(childSnapshot) { 
+			
+				let childData = childSnapshot.val();
+					var img_id = 'uploadedProductListImage'+childData.number;
+					var button_id='delete_button'+childData.number;
+					var style = "width: 250px; height: 250px ; border-style: solid; border-color: #00b300";
+					$("#wishes").append('<li class="list-group-item">' 
+						+ "<small>" + childData.header + "</small><br />" 
+						+"<button id='"+button_id+"'>delete item</button>"
+					+ '</li>');
+								 
+				document.getElementById(button_id).setAttribute('onclick','deleteWish("'+childData.number+'")');
+
+			  });
+			$("#wishes").parent().scrollTop($('#wishes').height());
+		});
+  
+  
+  }
+  
+  
+  
   
   function getItemList()
   {
@@ -278,7 +462,12 @@
 
 				
 				if(childData.hasImage == 1)
-					setListImage(userId,childData.number);
+				{
+				var storage_path = 'product_images/'+userId+'/'+childData.number;
+				var data_path = 'uploadedProductListImage'+childData.number;
+					//setListImage(userId,childData.number);
+					setListImage(storage_path, data_path);
+				}
 			  });
 			$("#items").parent().scrollTop($('#items').height());
 		});
@@ -290,6 +479,23 @@
   
 
   }
+  
+  
+  
+  function deleteWish (product_number)
+  {
+	
+   var userId = firebase.auth().currentUser.uid;
+   var messagesRef = firebase.database().ref('wishList');
+   messagesRef.child(userId + '/' + product_number).remove();
+    getWishList();		
+
+}
+  
+
+  
+  
+  
   
   function deleteProduct(product_number)
   {
@@ -313,22 +519,24 @@
 
   }
   
-  function setListImage(userId,number) {
+  //function setListImage(userId,number) {
+    function setListImage(storage_path,data_path) {
+
 	//$("#uploadBtn").text('uploading...');
 			var storageRef = firebase.storage().ref();
 			var email = firebase.auth().currentUser.email;
 			
-			var name = storageRef.child('product_images/'+userId+'/'+number);
+			var name = storageRef.child(storage_path);
 					name.getDownloadURL().then(function(url){
 					console.log('url: ' + url);
-					var img = document.getElementById('uploadedProductListImage'+number);
+					var img = document.getElementById(data_path);
 
 					if(url != null){
 						img.src = url;
 						}
 						else{
 						//wait(2500);
-						storageRef.child('product_images/'+userId+'/'+number).on("value", function(snapshot) {
+						storageRef.child(storage_path).on("value", function(snapshot) {
 						name.getDownloadURL().then(function(url){
 						img.src = url;
 						});
@@ -412,10 +620,13 @@ return 'aa';
 });
 	}
 	
-	
+	$("#cancelMyWishList").click(function(){
+	$("#wishList").click();
+	});
 	
 	$("#cancelMyItemList").click(function(){
-	setVisibilty('itemsWindow');
+	$("#myItems").click();
+	/*setVisibilty('itemsWindow');
 	if(itemsWindow === true)
 	{
 	setVisibiltyTo('myItemsList','visible');
@@ -427,7 +638,7 @@ return 'aa';
 	setVisibiltyTo('myItemsList','hidden');
 	setVisibiltyTo('addItemMenu','hidden');
 	itemsWindow=true;
-	}
+	}*/
   });
 	
 	
@@ -437,7 +648,11 @@ return 'aa';
 	setVisibiltyTo('addItemMenu','hidden');
   });
 	
-	
+	$("#cancelAddWish").click(function(){
+	console.log('cancelAddWish');
+	setVisibiltyTo('myWishList','visible');
+	setVisibiltyTo('addWishMenu','hidden');
+  });
 	
 
 </script>
@@ -539,10 +754,47 @@ return 'aa';
   
   }
   
+  
+  
+  
+  $("#saveAddWish").click(function(){
+  var userId = firebase.auth().currentUser.uid;
+  var productCount = 0;
+  firebase.database().ref('productCount/' + userId).once('value').then(function(snapshot) 
+  {
+  console.log("productCount: " + snapshot.val());
+  if(snapshot.val() != null)
+  {
+  productCount = snapshot.val(); 
+  productCount = productCount + 1;
+  firebase.database().ref('productCount/' + userId).set(productCount);
+  }
+  else
+  {
+  productCount = 1;
+  firebase.database().ref('productCount/' + userId).set(productCount);
+  }
+
+
+  
+  var info ={
+  header : document.getElementById('wishHeader').value,
+  number: productCount
+  }
+  firebase.database().ref('wishList/' + userId + '/' + productCount ).set(info);
+  
+  
+  backToWishMenu();
+  });
+  });
+  
+  
+  
+  
+  
   $("#saveAddItem").click(function(){
    
   var userId = firebase.auth().currentUser.uid;
-  //var root = firebase.database().ref();
   var productCount = 0;//root.child("productCount/"+userId);
   
   
@@ -590,6 +842,18 @@ return 'aa';
   
   
 });
+
+
+
+	function backToWishMenu()
+	{
+    setVisibiltyTo('myWishList','visible');
+	setVisibiltyTo('addWishMenu','hidden');
+	wait(3500);
+	getWishList();
+
+	}
+
   
 	function backToMenu()
 	{
@@ -598,7 +862,7 @@ return 'aa';
 	tempImage = null;
 	document.getElementById('productHeader').value = "";
 	document.getElementById('productTextArea').value = "";
-	document.getElementById('product_image').src = "images/profile.png";
+	document.getElementById('product_image').src = "images/profile.png";	
 	wait(3500);
 	getItemList();
 
