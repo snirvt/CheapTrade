@@ -270,6 +270,7 @@ var uid = window.location.hash.substring(1);
 		//console.log("userId" ,visitorID);
 		//var messagesRef = firebase.database().ref().child('chat/'+visitorID+'-TO-'+uidVisited);
 		$("#sendBtn").click(function(){
+			chat_notification();
 			let value = $("#messageInput").val();
 			if(value == "") return;
 			let ref = messagesRef.push();
@@ -287,10 +288,12 @@ var uid = window.location.hash.substring(1);
 			$("#messages").empty();
 			data.forEach(function(childSnapshot) {
 				let childData = childSnapshot.val();
+				var style = "width: 150px; height: 150px ; border-style: solid; border-color: #00b300";
+
 				if(childData.type == "image"){
 					$("#messages").append('<li class="list-group-item">' 
 						+ "<small>" + childData.sender + "</small><br />" 
-						+ "<img src='" + childData.message + "'/><br />"
+						+ "<img src='" + childData.message + "' style='"+style+"'/><br />"
 						+ "<small>" + childData.timestamp + "</small>"
 					+ '</li>');
 				} else{
@@ -317,7 +320,8 @@ var uid = window.location.hash.substring(1);
 				console.log('cancelled');
 				return;
 			}
-			$("#uploadBtn").text('uploading...');
+			chat_notification();
+			//$("#uploadBtn").text('uploading...');
 			var storageRef = firebase.storage().ref();
 			var name = storageRef.child("images/" + new Date().getTime());
 			name.put(e.target.files[0]).then(function(snapshot){
@@ -329,12 +333,26 @@ var uid = window.location.hash.substring(1);
 							sender: email, 
 							timestamp: new Date().toString()
 						});
-						$("#uploadBtn").text('send a file');
+						//$("#uploadBtn").text('send a file');
 						$("input[type='file']").val(null);
 					}).catch(function(err){ console.log(err); });
 			}).catch(function(err){ console.log(err); $("#uploadBtn").text("didn't work out.. try again!");});
 		});
-		
+function chat_notification()
+{	
+var visitorID = firebase.auth().currentUser.uid;
+var visitorEmail = firebase.auth().currentUser.email;
+
+ var ref = firebase.database().ref().child('notifications/'+uid+'/massages/'+visitorID);
+
+  var info ={
+  email : visitorEmail,
+  sender : visitorID,
+  hasSeen : 0
+  }
+  ref.set(info);
+}
+ 
  
  $("#friend_request_button").click(function(){
 	
@@ -342,15 +360,11 @@ var visitorID = firebase.auth().currentUser.uid;
 var visitorEmail = firebase.auth().currentUser.email;
 var friend_request_count = 0;
 
-console.log('lalalalalala');
-
-
-  
-  messagesRef = firebase.database().ref().child('notifications/'+visitorID+'/friend_requests/'+uid);
+messagesRef = firebase.database().ref().child('notifications/'+uid+'/friend_requests/'+visitorID);
 
   var info ={
-  email : email,
-  sender : uid,
+  email : visitorEmail,
+  sender : visitorID,
   hasSeen : 0
   }
   messagesRef.set(info);
@@ -620,8 +634,9 @@ return 'aa';
 
 </script>
 
+
 <script>
-	var tempImage = null;//getDefaultProductImage();
+	/*var tempImage = null;//getDefaultProductImage();
 	var buttonPressed = 0;
 
 	$(document).ready(function(){
@@ -670,7 +685,7 @@ return 'aa';
 						//$("#uploadBtn").text('send a file');
 						$("input[type='file']").val(null);
 					}).catch(function(err){ console.log(err); });
-			}).catch(function(err){ console.log(err); /*$("#uploadBtn").text("didn't work out.. try again!")*/;});
+			}).catch(function(err){ console.log(err); ;});
 		}
   
   
@@ -711,7 +726,7 @@ return 'aa';
 						//$("#uploadProductImageBtn").text('send a file');
 					//	$("input[type='file']").val(null);
 					}).catch(function(err){ console.log(err); });
-			}).catch(function(err){ console.log(err); /*$("#uploadProductImageBtn").text("didn't work out.. try again!")*/;});
+			}).catch(function(err){ console.log(err); ;});
 		
   
   
@@ -792,7 +807,7 @@ function getDefaultProductImage()
 }).catch(function(error) {
   // Handle any errors
 });
-	}
+	}*/
 	
 	
 </script>
