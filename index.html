@@ -44,7 +44,14 @@
 
 
 <div style="position: absolute; top: 100px; right: 250px">
-<div id="notificationWindow" style=" ;visibility: hidden ;height: 500px ;width:300px; margin:0 auto;top: 100px; border-style: solid; border-color: #00b300;">
+<div id="notificationWindow" style=" ;visibility: hidden ;height: 500px ;width:600px; margin:0 auto;top: 100px; border-style: solid; border-color: #00b300;">
+<button class="login100-form-btn" id="friend_request_button" style="width: 30%;position: absolute; top: 20px; right: 20px; font-size: 20px;">Freind Requests</button>
+<button class="login100-form-btn" id="msg_button" style="width: 30%;position: absolute; top: 80px; right: 20px; font-size: 20px;">new massages</button>
+<button class="login100-form-btn" id="product_match_button" style="width: 30%;position: absolute; top: 140px; right: 20px; font-size: 20px;">product match</button>
+
+<button class="login100-form-btn" id="cancelNotificationWindow" style="width: 30%;position: absolute; top: 440px; right: 20px; font-size: 20px;">Cancel</button>
+
+
 <div id="notificationsList" style=" ;visibility: hidden">    
 <div class="col-md-8"style="height: 495px !Important; overflow-y: scroll;border: 1px splid #f0f0f0;">
 			<ul class="list-group" id="notifications">
@@ -58,7 +65,7 @@
 
 
 
-<div style="position: absolute; top: 100px; left: 300px;">
+<div id="serachSellerWindowParentBlock" style="position: absolute; top: 100px; left: 300px; display:none">
 <div id="serachSellerWindow" style=" ;visibility: hidden ;height: 500px ;width:600px; margin:0 auto;top: 100px; border-style: solid; border-color: #00b300;">
 
 		<div class="wrap-input100 validate-input m-t-85 m-b-35" style="margin: 20px; width: 285px">
@@ -151,6 +158,8 @@
   searchSellerFlag = true;
   
   $("#serachSellerButton").click(function(){
+	//document.getElementById('serachSellerWindowParentBlock').style.display='block';
+	setDisplay('serachSellerWindowParentBlock');
 	setVisibilty('serachSellerWindow');
 	document.getElementById('sellersList').style.visibility='hidden';
 	document.getElementById("sellerNameInput").value="Enter Name";
@@ -159,15 +168,39 @@
   
   
   
+  
+  
+  var notificationWindow = true;
+  
   $("#notificationsButton").click(function(){
 	setVisibilty('notificationWindow');
-	getNotificationsList();
-	document.getElementById('notificationsList').style.visibility = 'visible';
-	
-	
-	//document.getElementById('sellersList').style.visibility='hidden';
-	//document.getElementById("sellerNameInput").value="Enter Name";
   });
+  
+  
+  
+  
+  
+  $("#msg_button").click(function(){
+	get_Massage_Notifications_List();
+	setVisibilty('notificationsList');
+  });
+  
+  
+  
+  $("#friend_request_button").click(function(){
+	get_Freind_Request_Notifications_List();
+	setVisibilty('notificationsList');
+  });
+  
+  
+  
+  
+  
+  function setVisibiltyTo(id,vis) {
+  var x = document.getElementById(id);
+    x.style.visibility = vis;
+}
+
   
   
   $("#serachSellerOkButton").click(function(){
@@ -187,6 +220,16 @@
     x.style.visibility = 'visible';
   } else {
     x.style.visibility = 'hidden';
+  }
+}
+
+
+ function setDisplay(id) {
+  var x = document.getElementById(id);
+  if (x.style.display === 'none') {
+    x.style.display = 'block';
+  } else {
+    x.style.display = 'none';
   }
 }
   
@@ -233,7 +276,83 @@
   
   function moveToPage(page)
   {
-  window.location.href = page;
+	window.location.href = page;
+  }
+  
+  function approveFriend(friend_id)
+  {
+	console.log('freind added: ', friend_id);
+	var userId = firebase.auth().currentUser.uid;
+
+	var myFriendList = firebase.database().ref('friends_list/' + userId + '/' + friend_id);
+	var hisFriendList = firebase.database().ref('friends_list/' + friend_id + '/' + userId);
+
+	var messagesRef = firebase.database().ref('notifications');
+
+	myFriendList.set({
+	uid: friend_id
+	});
+	hisFriendList.set({
+	uid: userId
+	});
+	
+   messagesRef.child(userId +'/friend_requests/' + friend_id).remove();
+	
+  }
+  
+  
+  
+  function chatResponse(friend_id, button_id)
+  {
+   var userId = firebase.auth().currentUser.uid;
+   var messagesRef = firebase.database().ref('notifications');
+   messagesRef.child(userId +'/massages/' + friend_id).remove();
+   moveToPage(button_id);
+	
+  }
+ 
+  
+    function get_Massage_Notifications_List()
+  {
+  var userId = firebase.auth().currentUser.uid;
+  var messagesRef = firebase.database().ref();
+  var count = 0;
+   var users_info = firebase.database().ref('users_info');
+
+	messagesRef.child('notifications/' + userId +'/massages').on('value', function(data){ 
+	console.log('child: ', data);
+	$("#notifications").empty();
+		data.forEach(function(childSnapshot) {
+		let childData = childSnapshot.val();
+		
+		users_info.child(childData.sender).on('value', function(dataData){
+		let childDataData = dataData.val();
+			count = count + 1;
+			console.log('kaka: ', childSnapshot);
+			
+			var style = "width: 150px; height: 150px ; border-style: solid; border-color: #00b300";
+			var img_id = 'FriendImage' + count;
+			var button_id = 'visitorView.html' + '#' + childData.sender;
+			var listClass="list-group-item";
+			
+			var approveId = 'approve_btn'+childData.uid;
+			$("#notifications").append("<button id='"+button_id+"'><li class='"+listClass+"'>"
+						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+style+"' /><br />"
+						+ "<small>" + childDataData.email + "</small><br />" 
+						+ "<small>" + childDataData.first_name + ' ' + childDataData.last_name + "</small><br />" 
+					+ '</li></button>'
+					+"<button id='"+approveId+"' class='login100-form-btn'> go to chat</button>"
+					);
+			
+			setListImage(childData.email,img_id);
+			document.getElementById(button_id).setAttribute('onclick','moveToPage("'+button_id+'")');
+			document.getElementById(approveId).setAttribute('onclick','chatResponse("'+childData.sender+'", "'+button_id+'")');
+
+		//}
+		});
+		});
+	  $("#notifications").parent().scrollTop($('#notifications').height());
+	});
   }
   
   
@@ -241,14 +360,16 @@
   
   
   
-    function getNotificationsList()
+  
+  
+    function get_Freind_Request_Notifications_List()
   {
   var userId = firebase.auth().currentUser.uid;
   var messagesRef = firebase.database().ref();
   var count = 0;
 	messagesRef.child('notifications/' + userId +'/friend_requests').on('value', function(data){ 
 	console.log('child: ', data);
-	$("#sellers").empty();
+	$("#notifications").empty();
 		data.forEach(function(childSnapshot) {
 		let childData = childSnapshot.val();
 		//if(equals(childData.email,Seller_name) || equals(childData.first_name,Seller_name) || equals(childData.last_name,Seller_name))
@@ -258,17 +379,26 @@
 			
 			var style = "width: 150px; height: 150px ; border-style: solid; border-color: #00b300";
 			var img_id = 'FriendImage' + count;
-			var button_id = 'visitorView.html' + '#' + childData.uid;
+			var button_id = 'visitorView.html' + '#' + childData.sender;
 			var listClass="list-group-item";
+			
+			var approveId = 'approve_btn'+childData.uid;
+			//"<button class="login100-form-btn" id="friend_request_button" style="width: 30%;position: absolute; top: 20px; right: 20px; font-size: 20px;">approve</button>"
+
+			
+			
 			$("#notifications").append("<button id='"+button_id+"'><li class='"+listClass+"'>"
 						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+style+"' /><br />"
 						+ "<small>" + childData.email + "</small><br />" 
 						+ "<small>" + childData.first_name + ' ' + childData.last_name + "</small><br />" 
 						//+"<button id='"+button_id+"'>click</button>"
-					+ '</li></button>');
+					+ '</li></button>'
+					+"<button id='"+approveId+"' class='login100-form-btn'> approve</button>"
+					);
 			
 			setListImage(childData.email,img_id);
 			document.getElementById(button_id).setAttribute('onclick','moveToPage("'+button_id+'")');
+			document.getElementById(approveId).setAttribute('onclick','approveFriend("'+childData.sender+'")');
 
 		//}
 		
