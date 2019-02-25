@@ -2,6 +2,7 @@
 <!doctype html>
 <html>
 <head>
+<img src="images/logo2.jpg" style="height:15%;width:100%">
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>UserInfo</title>
@@ -71,18 +72,18 @@
   <link rel="stylesheet" href="css/style.css" />
  
 </head>
-<body>
+<body background="images/back2.jpg">
 
 <button class="login100-form-btn" id="signOut" style="width: 10%;position: absolute; top: 20px; right: 20px; font-size: 20px;">Sign Out</button>
-<button class="login100-form-btn" id="myItems" style="width: 10%;position: absolute; top: 20px; right: 160px; font-size: 20px;">Items</button>
-<button class="login100-form-btn" id="chat_button" style="width: 10%;position: absolute; top: 20px; right: 300px; font-size: 20px;">Chat</button>
-<button class="login100-form-btn" id="home" style="width: 10%;position: absolute; top: 20px; right: 440px; font-size: 20px;">Home</button>
+<button class="login100-form-btn" id="myItems" style="width: 10%;position: absolute; top: 20px; right: 160px; font-size: 20px;margin-right:2%;">Items</button>
+<button class="login100-form-btn" id="chat_button" style="width: 10%;position: absolute; top: 20px; right: 300px; font-size: 20px;margin-right:4%;">Chat</button>
+<button class="login100-form-btn" id="home" style="width: 10%;position: absolute; top: 20px; right: 440px; font-size: 20px;margin-right:6%;">Home</button>
 
 
 
 
 <div style = "position: absolute; top: 20px; left:2px">
-<img id = "profile_image" src ="images/profile.png" style = "margin-left: 15px; width: 250px; height: 250px ; border-style: solid; border-color: #00b300;">
+<img id = "profile_image" src ="images/profile.png" style = "margin-left: 15px; margin-top:35%;width: 250px; height: 250px ; border-style: solid; border-color: #ffd700;">
 </img>
 </div>
 
@@ -95,8 +96,8 @@ send friend request
 
 
 
-<div style="position: absolute; top: 100px; left: 300px">
-<div id="itemsWindow" style=" ;visibility: hidden ;height: 500px ;width:600px; margin:0 auto;top: 100px; border-style: solid; border-color: #00b300;">
+<div style="position: absolute; top: 111px; left: 300px">
+<div id="itemsWindow" style=" ;visibility: hidden ;height: 500px ;width:600px; margin:0 auto;top: 100px; border-style: solid; border-color: #ffd700;">
 <div id="myItemsList" >    
 <button class="login100-form-btn" id="cancelMyItemList" style="width: 30%;position: absolute; top: 440px; right: 20px; font-size: 20px;">Cancel</button>
 
@@ -110,7 +111,7 @@ send friend request
 		<div id="addItemMenu" style ="position: absolute; top: 0px; visibility: hidden ;">
 		<div style = "position: absolute; top: 0px; left: 0px; ">
 
-		<img id = "product_image" src ="images/profile.png" style = "margin-left: 15px;margin-top: 15px; width: 250px; height: 250px ; border-style: solid; border-color: #00b300;">
+		<img id = "product_image" src ="images/profile.png" style = "margin-left: 15px;margin-top: 15px; width: 250px; height: 250px ; border-style: solid; border-color: #ffd700;">
 		</img>
 		</div>
 		<div style="position: relative ; top: 270px; ">
@@ -143,7 +144,7 @@ send friend request
 </div>
 
 
-<div id="chat" class="container" style="width: 50% ;visibility: hidden; position: absolute; top: 100px; right: 100px">
+<div id="chat" class="container" style="width: 600px ;visibility: hidden; position: absolute; top: 100px; margin-left:60%">
 	
 	<div class="row" >
 		<div class="col-md-6" style="height: 350px !Important; overflow-y: scroll;border: 1px splid #f0f0f0;">
@@ -162,7 +163,6 @@ send friend request
 		</div>
 	</div>
 </div>
-
 
 
 <script src="js/json3.min.js"></script>
@@ -288,7 +288,7 @@ var uid = window.location.hash.substring(1);
 			$("#messages").empty();
 			data.forEach(function(childSnapshot) {
 				let childData = childSnapshot.val();
-				var style = "width: 150px; height: 150px ; border-style: solid; border-color: #00b300";
+				var style = "width: 150px; height: 150px ; border-style: solid; border-color: #ffd700";
 
 				if(childData.type == "image"){
 					$("#messages").append('<li class="list-group-item">' 
@@ -455,7 +455,7 @@ messagesRef = firebase.database().ref().child('notifications/'+uid+'/friend_requ
 				//+ "<img src='" + stam(userId,childData.number) + "'/><br />"
 					var img_id = 'uploadedProductListImage'+childData.number;
 					var button_id='delete_button'+childData.number;
-					var style = "width: 250px; height: 250px ; border-style: solid; border-color: #00b300";
+					var style = "width: 250px; height: 250px ; border-style: solid; border-color: #ffd700";
 					var Fun = 'doFunction';
 					$("#items").append('<li class="list-group-item">' 
 						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+style+"' /><br />"
