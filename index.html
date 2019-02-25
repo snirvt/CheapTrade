@@ -188,12 +188,15 @@
   
   
   $("#friend_request_button").click(function(){
-	get_Freind_Request_Notifications_List();
+	get_Friend_Request_Notifications_List();
 	setVisibilty('notificationsList');
   });
   
   
-  
+  $("#product_match_button").click(function(){
+	get_Match_Notifications_List();
+	setVisibilty('notificationsList');
+  });
   
   
   function setVisibiltyTo(id,vis) {
@@ -311,6 +314,16 @@
 	
   }
  
+ function matchResponse(match_id, button_id)
+  {
+   var userId = firebase.auth().currentUser.uid;
+   var messagesRef = firebase.database().ref('notifications');
+   messagesRef.child(userId +'/product_match/' + match_id).remove();
+   moveToPage(button_id);
+	
+  }
+ 
+ 
   
     function get_Massage_Notifications_List()
   {
@@ -362,7 +375,61 @@
   
   
   
-    function get_Freind_Request_Notifications_List()
+  
+  
+    function get_Match_Notifications_List()
+  {
+  var userId = firebase.auth().currentUser.uid;
+  var messagesRef = firebase.database().ref();
+  var count = 0;
+   var users_info = firebase.database().ref('users_info');
+
+	messagesRef.child('notifications/' + userId +'/product_match').on('value', function(data){ 
+	
+	console.log('get_Match_Notifications_List');
+	$("#notifications").empty();
+		data.forEach(function(childSnapshot) {
+		let childData = childSnapshot.val();
+		
+		users_info.child(childData.sender).on('value', function(dataData){
+		let childDataData = dataData.val();
+			count = count + 1;
+			console.log('kaka: ', childSnapshot);
+			
+			var style = "width: 150px; height: 150px ; border-style: solid; border-color: #00b300";
+			var img_id = 'MatchImage' + count;
+			var button_id = 'visitorView.html' + '#' + childData.sender;
+			var listClass="list-group-item";
+			
+			var approveId = 'approve_btn'+childData.uid;
+			$("#notifications").append("<button id='"+button_id+"'><li class='"+listClass+"'>"
+						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+style+"' /><br />"
+						+ "<small>" + childDataData.email + "</small><br />" 
+						+ "<small>" + childDataData.first_name + ' ' + childDataData.last_name + "</small><br />" 
+					+ '</li></button>'
+					+"<button id='"+approveId+"' class='login100-form-btn'>check match</button>"
+					);
+			
+			setListImage(childDataData.email,img_id);
+			document.getElementById(button_id).setAttribute('onclick','moveToPage("'+button_id+'")');
+			document.getElementById(approveId).setAttribute('onclick','matchResponse("'+childData.sender+'", "'+button_id+'")');
+
+		//}
+		});
+		});
+	  $("#notifications").parent().scrollTop($('#notifications').height());
+	});
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    function get_Friend_Request_Notifications_List()
   {
   var userId = firebase.auth().currentUser.uid;
   var messagesRef = firebase.database().ref();
