@@ -528,7 +528,6 @@
 			
 			var name = storageRef.child(storage_path);
 					name.getDownloadURL().then(function(url){
-					console.log('url: ' + url);
 					var img = document.getElementById(data_path);
 
 					if(url != null){
@@ -760,6 +759,8 @@ return 'aa';
   $("#saveAddWish").click(function(){
   var userId = firebase.auth().currentUser.uid;
   var productCount = 0;
+  
+  
   firebase.database().ref('productCount/' + userId).once('value').then(function(snapshot) 
   {
   console.log("productCount: " + snapshot.val());
@@ -776,17 +777,134 @@ return 'aa';
   }
 
 
-  
+  var title = document.getElementById('wishHeader').value;
   var info ={
-  header : document.getElementById('wishHeader').value,
+  header : title,
   number: productCount
   }
   firebase.database().ref('wishList/' + userId + '/' + productCount ).set(info);
   
-  
+  catchProducts(title);
   backToWishMenu();
   });
   });
+  
+ /* ======================================================================================================================
+  ======================================================================================================================
+  ======================================================================================================================
+  ======================================================================================================================
+  */function catchProducts(title)
+  {
+  console.log("catchProducts", title);
+   var users_info = firebase.database().ref('users_info');
+	var userId = firebase.auth().currentUser.uid;
+
+	firebase.database().ref('products_info').once('value').then(function(data){
+			data.forEach(function(childSnapshot) {  
+					childSnapshot.forEach(function(childData) { 
+					var grandChildData = childData.val();
+					var productTitle = grandChildData.header;
+					
+					if(productTitle == title)
+					{
+						var seller_uid =  grandChildData.uid;
+						console.log("seller_uid" , seller_uid);
+						users_info.child(seller_uid).on('value', function(dataData){
+						users_info_val = dataData.val();
+						console.log("catchProducts" , users_info_val.first_name);
+						
+						var ref1 = firebase.database().ref().child('notifications/'+seller_uid+'/product_match/'+userId);
+						var ref2 = firebase.database().ref().child('notifications/'+userId+'/product_match/'+seller_uid);
+						
+						
+						
+						var info1 ={
+						email : users_info_val.email,
+						sender : userId,
+						hasSeen : 0
+						}
+						
+						
+						var info2 ={
+						email : users_info_val.email,
+						sender : grandChildData.uid,
+						hasSeen : 0
+						}
+					
+						ref1.set(info1);
+						ref2.set(info2);
+						});
+
+					}
+			});					
+		});			
+  });
+  
+  
+  }
+  
+  
+  
+  
+  
+  
+  /*
+    function showFriendsList(userId)
+  {
+  
+  console.log('showFriendsList', userId);
+  
+  
+  var messagesRef = firebase.database().ref('friends_list');
+  var users_info = firebase.database().ref('users_info');
+
+  messagesRef.child(userId).on('value', function(data){ 
+			$("#friends").empty();
+			data.forEach(function(childSnapshot) {  
+				let childData = childSnapshot.val();
+					var friend_uid =  childData.uid;
+					
+					users_info.child(friend_uid).on('value', function(dataData){
+					let childDataData = dataData.val();
+
+					var friend_email = childDataData.email;
+					var img_id = 'FriendListImage'+friend_uid;
+					var style = "width: 100px; height: 100px ; border-style: solid; border-color: #00b300";
+					var button_id = 'visitorView.html' + '#' + friend_uid;
+					var listClass = "list-group-item";
+					
+					$("#friends").append("<button id='"+button_id+"'><li class='"+listClass+"'>"
+						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+style+"' /><br />"
+						+ "<small>" + childDataData.first_name + ' ' + childDataData.last_name + "</small><br />" 
+						+ '</li></button>');
+				
+				var storage_path = 'profile_images/'+friend_email;
+				var data_path = img_id;
+					setListImage(storage_path, data_path);
+					document.getElementById(button_id).setAttribute('onclick','moveToPage("'+button_id+'")');
+					
+					});		
+			$("#friends").parent().scrollTop($('#friends').height());
+		});
+		});
+  
+  
+  
+  
+  }
+  
+  
+  */
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
@@ -823,7 +941,9 @@ return 'aa';
   header : document.getElementById('productHeader').value,
   moreInfo : document.getElementById('productTextArea').value,
   number: productCount,
-  hasImage: hasImage
+  hasImage: hasImage,
+  uid: userId
+  
   }
   firebase.database().ref('products_info/' + userId + '/' + productCount ).set(info);
   
@@ -849,7 +969,7 @@ return 'aa';
 	{
     setVisibiltyTo('myWishList','visible');
 	setVisibiltyTo('addWishMenu','hidden');
-	wait(3500);
+	wait(4500);
 	getWishList();
 
 	}
