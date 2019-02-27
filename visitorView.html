@@ -236,6 +236,7 @@ var uid = window.location.hash.substring(1);
 			
 			getProfileImage(val.email);
 			getChat(messagesRef);
+			getFriendStatus(visitorID, uidVisited);
 			}); 
 
 			/*var messagesRef = firebase.database().ref('users_info');
@@ -263,7 +264,28 @@ var uid = window.location.hash.substring(1);
  
  
  
+ function getFriendStatus(visitorID, uidVisited)
+ {
+ 	 
+
+ var ref = firebase.database().ref();
  
+ ref.child('friends_list/'+visitorID +'/' + uidVisited).once('value', function(data){
+ 
+ console.log('data', data.val())
+ if(data.val() == null )
+	return;
+
+console.log('frienddssssss', data.val())
+
+$("#friend_request_button").html("remove from friends");
+
+ document.getElementById('friend_request_button').value = "remove from friends";
+
+ });
+ 
+ 
+ }
  
  
 		//var userId = firebase.auth().currentUser.uid;
@@ -360,6 +382,18 @@ var visitorID = firebase.auth().currentUser.uid;
 var visitorEmail = firebase.auth().currentUser.email;
 var friend_request_count = 0;
 
+var val = document.getElementById('friend_request_button').value;// = "remove from friends";
+if(val == "remove from friends")
+{
+   firebase.database().ref().child('friends_list/' + visitorID +'/' + uid).remove();
+   firebase.database().ref().child('friends_list/' + uid +'/' + visitorID).remove();
+   $("#friend_request_button").html("Send Friend Request");
+
+ document.getElementById('friend_request_button').value = "";
+
+return;
+}
+
 messagesRef = firebase.database().ref().child('notifications/'+uid+'/friend_requests/'+visitorID);
 
   var info ={
@@ -368,6 +402,7 @@ messagesRef = firebase.database().ref().child('notifications/'+uid+'/friend_requ
   hasSeen : 0
   }
   messagesRef.set(info);
+   $("#friend_request_button").html("Pending...");
 
 
   
