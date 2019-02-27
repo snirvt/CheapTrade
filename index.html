@@ -325,7 +325,7 @@
    var userId = firebase.auth().currentUser.uid;
    var messagesRef = firebase.database().ref('notifications');
    messagesRef.child(userId +'/product_match/' + match_id).remove();
-   moveToPage(button_id);
+  // moveToPage(button_id);
 	
   }
  
@@ -413,7 +413,7 @@
 						+ "<small>" + childDataData.email + "</small><br />" 
 						+ "<small>" + childDataData.first_name + ' ' + childDataData.last_name + "</small><br />" 
 					+ '</li></button>'
-					+"<button id='"+approveId+"' class='login100-form-btn'>check match</button>"
+					+"<button id='"+approveId+"' class='login100-form-btn'>delete match</button>"
 					);
 			
 			setListImage(childDataData.email,img_id);
