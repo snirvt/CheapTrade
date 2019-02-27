@@ -188,6 +188,7 @@
 				<h4>Additional Info</h4>
 				<textarea id="productTextArea"></textarea>
 		<img src="images/loader.gif" id="loader" style="display:none" height="20%" width="20%"/>
+
 					</div>
 					
 					
@@ -787,11 +788,13 @@ return 'aa';
   var title = document.getElementById('wishHeader').value;
   var info ={
   header : title,
-  number: productCount
+  number: productCount,
+  uid: userId
   }
   firebase.database().ref('wishList/' + userId + '/' + productCount ).set(info);
   
-  catchProducts(title);
+  var source = 'products_info';
+  catchProducts(title,source);
   backToWishMenu();
   });
   });
@@ -800,13 +803,15 @@ return 'aa';
   ======================================================================================================================
   ======================================================================================================================
   ======================================================================================================================
-  */function catchProducts(title)
+  */function catchProducts(title, source)
   {
   console.log("catchProducts", title);
+    console.log("source", source);
+
    var users_info = firebase.database().ref('users_info');
 	var userId = firebase.auth().currentUser.uid;
 
-	firebase.database().ref('products_info').once('value').then(function(data){
+	firebase.database().ref(source).once('value').then(function(data){
 			data.forEach(function(childSnapshot) {  
 					childSnapshot.forEach(function(childData) { 
 					var grandChildData = childData.val();
@@ -943,9 +948,9 @@ return 'aa';
   if (tempImage != null)
   hasImage = 1;
   
-  
+  var title = document.getElementById('productHeader').value;
   var info ={
-  header : document.getElementById('productHeader').value,
+  header : title,
   moreInfo : document.getElementById('productTextArea').value,
   number: productCount,
   hasImage: hasImage,
@@ -960,8 +965,12 @@ return 'aa';
 
   updateProductImage(tempImage,productCount);
   }
+  
+  var source = 'wishList';
+  catchProducts(title, source);
   $('#loader').hide(); //hide loader
   backToMenu();
+
   
 });
   
