@@ -187,7 +187,7 @@
 					<div  style ="position: absolute; top: 150px;left: 280px">
 				<h4>Additional Info</h4>
 				<textarea id="productTextArea"></textarea>
-
+		<img src="images/loader.gif" id="loader" style="display:none" height="20%" width="20%"/>
 					</div>
 					
 					
@@ -922,7 +922,7 @@ return 'aa';
   var userId = firebase.auth().currentUser.uid;
   var productCount = 0;//root.child("productCount/"+userId);
   
-  
+  $('#loader').show(); // show loader
   
   firebase.database().ref('productCount/' + userId).once('value').then(function(snapshot) 
   {
@@ -960,7 +960,7 @@ return 'aa';
 
   updateProductImage(tempImage,productCount);
   }
-  
+  $('#loader').hide(); //hide loader
   backToMenu();
   
 });
