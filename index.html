@@ -48,8 +48,8 @@
 
 
 
-<div style="position: absolute; top: 100px; right: 250px">
-<div id="notificationWindow" style=" ;visibility: hidden ;height: 500px ;width:600px; margin:0 auto;top: 100px; border-style: solid; border-color: #ffd700; background:rgba(0,0,0,0.7);">
+<div id="notificationWindowParent" style="position: absolute; top: 100px; right: 300px ;  display: none">
+<div id="notificationWindow" style=" ;visibility: hidden ;height: 500px ;width:700px; margin:0 auto;top: 100px; border-style: solid; border-color: #ffd700; background:rgba(0,0,0,0.7);">
 <button class="login100-form-btn" id="friend_request_button" style="width: 30%;position: absolute; top: 20px; right: 20px; font-size: 20px;">Freind Requests</button>
 <button class="login100-form-btn" id="msg_button" style="width: 30%;position: absolute; top: 80px; right: 20px; font-size: 20px;">new massages</button>
 <button class="login100-form-btn" id="product_match_button" style="width: 30%;position: absolute; top: 140px; right: 20px; font-size: 20px;">product match</button>
@@ -70,8 +70,8 @@
 
 
 
-<div id="serachSellerWindowParentBlock" style="position: absolute; top: 100px; left: 300px; display:none">
-<div id="serachSellerWindow" style=" ;visibility: hidden ;height: 500px ;width:600px; margin:0 auto;top: 100px; border-style: solid; border-color: #ffd700;background:rgba(0,0,0,0.7);">
+<div id="serachSellerWindowParentBlock" style="position: absolute; top: 100px; right: 300px; display:none">
+<div id="serachSellerWindow" style=" ;visibility: hidden ;height: 100px ;width:700px; margin:0 auto;top: 100px; border-style: solid; border-color: #ffd700;background:rgba(0,0,0,0.7);">
 
 		<div class="wrap-input100 validate-input m-t-85 m-b-35" style="margin: 20px; width: 285px">
 			<input class="input100" type="text" name="Product Name" id="sellerNameInput" onfocus="if(this.value == 'Enter Name') { this.value = ''; }" value="Enter Name"">
@@ -81,7 +81,7 @@
 		<button class="login100-form-btn" id="serachSellerOkButton" style="width: 15%;position: absolute; top: 20px; right: 20px; font-size: 20px;">Search</button>
 
 <div id="sellersList" style=" ;visibility: hidden">    
-<div class="col-md-8"style="height: 495px !Important; overflow-y: scroll;border: 1px splid #f0f0f0;">
+<div class="col-md-8"style="height: 400px !Important; overflow-y: scroll;border: 1px splid #f0f0f0;">
 			<ul class="list-group" id="sellers">
 			<li style="margin-top: 10%; border: none; text-align: center; font-size: 40px;">Loading...</li>
 			</ul>
@@ -135,6 +135,7 @@
     storageBucket: "cheaptrade-d4860.appspot.com",
     messagingSenderId: "943938559788"
   };
+  
   firebase.initializeApp(config);
   
   firebase.auth().onAuthStateChanged(function(user) {
@@ -161,25 +162,44 @@
   });
   
   
-  searchSellerFlag = true;
+  var notificationsWindow = true;
+  var serachSellerWindow = true;
   
   $("#serachSellerButton").click(function(){
 	//document.getElementById('serachSellerWindowParentBlock').style.display='block';
+	if(notificationsWindow == false)
+		$("#notificationsButton").click();
+	
+	
 	setDisplay('serachSellerWindowParentBlock');
 	setVisibilty('serachSellerWindow');
+
 	document.getElementById('sellersList').style.visibility='hidden';
 	document.getElementById("sellerNameInput").value="Enter Name";
+	
+	
+	
+	serachSellerWindow = !serachSellerWindow;
+
+	  document.getElementById("serachSellerWindow").style.height = '100px';
+
   });
   
   
   
   
-  
-  
-  var notificationWindow = true;
+  $("#cancelNotificationWindow").click(function(){
+  $("#notificationsButton").click();
+  });
   
   $("#notificationsButton").click(function(){
+  if(serachSellerWindow == false)
+		$("#serachSellerButton").click();
 	setVisibilty('notificationWindow');
+	setDisplay('notificationWindowParent');
+	notificationsWindow = !notificationsWindow;
+	setVisibiltyTo('notificationsList','hidden');
+	
   });
   
   
@@ -188,20 +208,21 @@
   
   $("#msg_button").click(function(){
 	get_Massage_Notifications_List();
-	setVisibilty('notificationsList');
+	setVisibiltyTo('notificationsList','visible');
   });
   
   
   
   $("#friend_request_button").click(function(){
 	get_Friend_Request_Notifications_List();
-	setVisibilty('notificationsList');
+	setVisibiltyTo('notificationsList','visible');
   });
   
   
   $("#product_match_button").click(function(){
 	get_Match_Notifications_List();
-	setVisibilty('notificationsList');
+	setVisibiltyTo('notificationsList','visible');
+	
   });
   
   
@@ -214,11 +235,18 @@
   
   $("#serachSellerOkButton").click(function(){
   
+  
+  
+  
+  
   var Seller_name = document.getElementById('sellerNameInput').value;
   console.log(Seller_name);
    
   getSellerList(Seller_name);
   document.getElementById('sellersList').style.visibility = 'visible';
+  
+  
+  document.getElementById("serachSellerWindow").style.height = '500px';
   
   });
   
@@ -401,15 +429,17 @@
 		let childDataData = dataData.val();
 			count = count + 1;
 			console.log('kaka: ', childSnapshot);
-			
-			var style = "width: 150px; height: 150px ; border-style: solid; border-color: #ffd700";
+			console.log('count: ', count);
+			var style = '; border-style: solid; border-color: #ffd700;background:rgba(0,0,0,0); color: #ffd700;';
+
+			var img_style = "width: 150px; height: 150px ; border-style: solid; border-color: #ffd700";
 			var img_id = 'MatchImage' + count;
 			var button_id = 'visitorView.html' + '#' + childData.sender;
 			var listClass="list-group-item";
 			
 			var approveId = 'approve_btn'+childData.uid;
-			$("#notifications").append("<button id='"+button_id+"'><li class='"+listClass+"'>"
-						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+style+"' /><br />"
+			$("#notifications").append("<button id='"+button_id+"'><li  style='"+style+"'  class='"+listClass+"'>"
+						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+img_style+"' /><br />"
 						+ "<small>" + childDataData.email + "</small><br />" 
 						+ "<small>" + childDataData.first_name + ' ' + childDataData.last_name + "</small><br />" 
 					+ '</li></button>'
@@ -423,8 +453,16 @@
 		//}
 		});
 		});
+		
+		
+
+	 
+		
+		
+		
 	  $("#notifications").parent().scrollTop($('#notifications').height());
 	});
+	
   }
   
   
@@ -450,7 +488,8 @@
 			count = count + 1;
 			console.log('kaka: ', childSnapshot);
 			
-			var style = "width: 150px; height: 150px ; border-style: solid; border-color: #ffd700";
+			var style = '; border-style: solid; border-color: #ffd700;background:rgba(0,0,0,0); color: #ffd700;';
+			var img_style = "width: 150px; height: 150px ; border-style: solid; border-color: #ffd700";
 			var img_id = 'FriendImage' + count;
 			var button_id = 'visitorView.html' + '#' + childData.sender;
 			var listClass="list-group-item";
@@ -460,8 +499,8 @@
 
 			
 			
-			$("#notifications").append("<button id='"+button_id+"'><li class='"+listClass+"'>"
-						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+style+"' /><br />"
+			$("#notifications").append("<button id='"+button_id+"'><li   style='"+style+"'     class='"+listClass+"'>"
+						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+img_style+"' /><br />"
 						+ "<small>" + childData.email + "</small><br />" 
 						+ "<small>" + childData.first_name + ' ' + childData.last_name + "</small><br />" 
 						//+"<button id='"+button_id+"'>click</button>"
@@ -477,6 +516,16 @@
 		
 		});
 	  $("#notifications").parent().scrollTop($('#notifications').height());
+	  
+	  var style = ' ;background:rgba(0,0,0,0); color: #ffd700;';
+
+	  if(count == 0)
+		$("#notifications").append("<li   style='"+style+"'>"
+		+'no new friend requests... :('
+		+ '</li>'
+		);
+
+	  
 	});
   }
   
@@ -506,12 +555,15 @@
 			count = count + 1;
 			console.log('kaka: ', childSnapshot);
 			
-			var style = "width: 250px; height: 250px ; border-style: solid; border-color: #ffd700";
+			
+			var style = '; border-style: solid; border-color: #ffd700;background:rgba(0,0,0,0); color: #ffd700;';
+			
+			var img_style = "width: 250px; height: 250px ; border-style: solid; border-color: #ffd700";
 			var img_id = 'SellerListImage' + count;
 			var button_id = 'visitorView.html' + '#' + childData.uid;
 			var listClass="list-group-item";
-			$("#sellers").append("<button id='"+button_id+"'><li class='"+listClass+"'>"
-						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+style+"' /><br />"
+			$("#sellers").append("<button id='"+button_id+"'><li  style='"+style+"'    class='"+listClass+"'>"
+						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+img_style+"' /><br />"
 						+ "<small>" + childData.email + "</small><br />" 
 						+ "<small>" + childData.first_name + ' ' + childData.last_name + "</small><br />" 
 						//+"<button id='"+button_id+"'>click</button>"
