@@ -93,8 +93,8 @@
 <input type="file" accept="image/jpeg,image/png" style="display: none;" >
 </label>
 </div>
-<div style="position: absolute; top: 20%; right:1%">
-<div class="col-md-8"style="left:30px; width: 500px;height: 450px !Important; overflow-y: scroll;border: 1px splid #f0f0f0;">
+<div style="position: absolute; top: 20%; right:0%">
+<div class="col-md-8"style="left:30px; width: 300px;height: 450px !Important; overflow-y: scroll;border: 1px splid #f0f0f0;">
 			<ul class="list-group" id="friends">
 			<li style="margin-top: 10%; border: none; text-align: center; font-size: 20px;">Loading...</li>
 			</ul>
@@ -284,12 +284,15 @@
 
 					var friend_email = childDataData.email;
 					var img_id = 'FriendListImage'+friend_uid;
-					var style = "width: 100px; height: 100px ; border-style: solid; border-color: #00b300";
+					
+					var style = '; border-style: solid; border-color: #ffd700;background:rgba(0,0,0,0); color: #ffd700;';
+
+					var img_style = "width: 100px; height: 100px ; border-style: solid; border-color: #ffd700;";
 					var button_id = 'visitorView.html' + '#' + friend_uid;
 					var listClass = "list-group-item";
 					
-					$("#friends").append("<button id='"+button_id+"'><li class='"+listClass+"'>"
-						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+style+"' /><br />"
+					$("#friends").append("<button id='"+button_id+"'><li  style='"+style+"'  class='"+listClass+"'>"
+						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+img_style+"' /><br />"
 						+ "<small>" + childDataData.first_name + ' ' + childDataData.last_name + "</small><br />" 
 						+ '</li></button>');
 				
