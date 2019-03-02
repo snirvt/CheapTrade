@@ -46,6 +46,7 @@
 
 <button class="login100-form-btn" id="serachSellerButton" style="width: 15%;position: absolute; top: 20px; right: 440px; font-size: 20px;margin-right:11%;">Search Seller</button>
 
+<button class="login100-form-btn" id="feedButton" style="width: 10%;position: absolute; top: 20px; right: 580px; font-size: 20px;margin-right:18%;">Feed</button>
 
 
 <div id="notificationWindowParent" style="position: absolute; top: 100px; right: 300px ;  display: none">
@@ -96,6 +97,36 @@
 
 
 
+<div id="feedWindowParent" style="position: absolute; top: 100px; right: 300px; display: none">
+<div id="feedWindow" style=" ;visibility: hidden ;height: 500px ;width:700px; margin:0 auto;top: 100px; border-style: solid; border-color: #ffd700;background:rgba(0,0,0,0.7);">
+<div id="myFeedList" >    
+<button class="login100-form-btn" id="refresh" style="width: 30%;position: absolute; top: 40px; right: 20px; font-size: 20px;">Refresh</button>
+<button class="login100-form-btn" id="cancelMyFeedList" style="width: 30%;position: absolute; top: 440px; right: 20px; font-size: 20px;">Cancel</button>
+<div>
+			<h3 style="width:100%; color:#ffd700; font-size:35px; text-align: center;">Feed</h3>
+			</div>
+<div class="col-md-8" style="height: 450px !Important; overflow-y: scroll;border: 1px splid #f0f0f0;">
+			
+			<ul class="list-group" id="feeds">
+			<li style="margin-top: 10%; border: none; text-align: center; font-size: 40px;">Loading...</li>
+			</ul>
+		</div>
+		</div>    
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -141,6 +172,8 @@
   firebase.auth().onAuthStateChanged(function(user) {
 			if (user) {
 				//still connected
+				$("#feedButton").click();
+				
 			} else {
 				location.href = "login.html";
 			}
@@ -156,6 +189,9 @@
 	});
   });
   
+  
+  
+  
   $("#userInfo").click(function(){
   location.href = "userInfo.html";
 	
@@ -164,12 +200,35 @@
   
   var notificationsWindow = true;
   var serachSellerWindow = true;
+  var feedWindow = true;
+  
+  
+  $("#feedButton").click(function(){
+  
+  getFeedList();
+	if(notificationsWindow == false)
+		$("#notificationsButton").click();
+	if(serachSellerWindow == false)
+		$("#serachSellerButton").click();
+		
+		
+    setDisplay('feedWindowParent');
+	setVisibilty('feedWindow');
+		feedWindow = !feedWindow;
+		
+  });
+  
+  $("#cancelMyFeedList").click(function(){
+  $("#feedButton").click();
+  });
+  
   
   $("#serachSellerButton").click(function(){
 	//document.getElementById('serachSellerWindowParentBlock').style.display='block';
 	if(notificationsWindow == false)
 		$("#notificationsButton").click();
-	
+	if(feedWindow == false)
+		$("#feedButton").click();
 	
 	setDisplay('serachSellerWindowParentBlock');
 	setVisibilty('serachSellerWindow');
@@ -195,6 +254,8 @@
   $("#notificationsButton").click(function(){
   if(serachSellerWindow == false)
 		$("#serachSellerButton").click();
+  if(feedWindow == false)
+		$("#feedButton").click();
 	setVisibilty('notificationWindow');
 	setDisplay('notificationWindowParent');
 	notificationsWindow = !notificationsWindow;
@@ -204,7 +265,9 @@
   
   
   
-  
+  $("#refresh").click(function(){
+  getFeedList();
+  });
   
   $("#msg_button").click(function(){
 	get_Massage_Notifications_List();
@@ -377,14 +440,20 @@
 			count = count + 1;
 			console.log('kaka: ', childSnapshot);
 			
-			var style = "width: 150px; height: 150px ; border-style: solid; border-color: #ffd700";
+			var style = '; border-style: solid; border-color: #ffd700;background:rgba(0,0,0,0); color: #ffd700;';
+
+			var img_style = "width: 150px; height: 150px ; border-style: solid; border-color: #ffd700";			
+			
+			
+			
+			
 			var img_id = 'FriendImage' + count;
 			var button_id = 'visitorView.html' + '#' + childData.sender;
 			var listClass="list-group-item";
 			
 			var approveId = 'approve_btn'+childData.uid;
-			$("#notifications").append("<button id='"+button_id+"'><li class='"+listClass+"'>"
-						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+style+"' /><br />"
+			$("#notifications").append("<button id='"+button_id+"'><li  style='"+style+"'   class='"+listClass+"'>"
+						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+img_style+"' /><br />"
 						+ "<small>" + childDataData.email + "</small><br />" 
 						+ "<small>" + childDataData.first_name + ' ' + childDataData.last_name + "</small><br />" 
 					+ '</li></button>'
@@ -398,7 +467,7 @@
 		//}
 		});
 		});
-	  $("#notifications").parent().scrollTop($('#notifications').height());
+	  $("#notifications").scrollTop($('#notifications').height());
 	});
   }
   
@@ -460,7 +529,8 @@
 		
 		
 		
-	  $("#notifications").parent().scrollTop($('#notifications').height());
+	  $("#notifications").scrollTop($('#notifications').height());
+
 	});
 	
   }
@@ -515,7 +585,7 @@
 		//}
 		
 		});
-	  $("#notifications").parent().scrollTop($('#notifications').height());
+	  $("#notifications").scrollTop($('#notifications').height());
 	  
 	  var style = ' ;background:rgba(0,0,0,0); color: #ffd700;';
 
@@ -575,7 +645,8 @@
 		}
 		
 		});
-	  $("#sellers").parent().scrollTop($('#sellers').height());
+	  $("#sellers").scrollTop($('#sellers').height());
+
 	});
   }
   
@@ -583,11 +654,230 @@
   
   
   
+  function getFeedList()
+  {
+  var userId = firebase.auth().currentUser.uid;
+  var messagesRef = firebase.database().ref('products_info');
+  var users_info = firebase.database().ref('users_info');
+  var count=0;
+  var n = [];
+  var id_array =[];
+  var productHeaders=[];
+  var myFunctToRunAfter = function () {
+  numArray=randomNum(1, count);
+  console.log(numArray);
+  //setDisplay('feed_id1');
+   //setDisplay('feed_id2');
+   
+   numArray.forEach(function(childSnapshot) {
+			
+			var btn_id = 'feed_id'+childSnapshot;
+
+			var x = document.getElementById(btn_id);
+			x.style.display = 'visible' ;
+			setDisplay('feed_id'+childSnapshot);
+			
+			var nameId = 'name_id'+childSnapshot;
+			var seller_uid = n[childSnapshot-1].uid;
+			users_info.child(seller_uid).on('value', function(seller_data){
+			
+			seller_data_val = seller_data.val();
+			setListImage(seller_data_val.email, id_array[childSnapshot-1]);
+			console.log('seller_data_val.email',seller_data_val.email);
+			
+			//console.log('id_array[childSnapshot]',id_array[childSnapshot-1]);
+
+			document.getElementById(nameId).innerHTML = seller_data_val.first_name+ ' '+ seller_data_val.last_name +  " sells " + productHeaders[childSnapshot-1]; 			
+			
+			var page = 'visitorView.html' + '#' + seller_uid;
+			document.getElementById(btn_id).setAttribute('onclick','moveToPage("'+page+'")');
+
+			});
+
+			
+			
+			
+			});
+   
+      console.info('RUN AFTER THE LOOP');
+    }
+  messagesRef.on('value', function(data){ 
+  return new Promise(function(resolve, reject) {
+			$("#feeds").empty();
+			var simple_data = data.val();
+			console.log('lengthhhhhhhhhhhh' ,simple_data);
+			
+			
+			data.forEach(function(childSnapshot) {
+			
+
+				childSnapshot.forEach(function(subchildSnapshot) {
+					
+					let childData = subchildSnapshot.val();
+					n.push(childData);
+					
+					var userId = childData.uid;
+					
+					var Product_img_id = 'uploadedProductListImage'+childData.number;
+					
+                    var img_style = "width: 150px; height: 150px ; border-style: solid; border-color: #ffd700; background:rgba(0,0,0,0);";
+					var style = ';border-style: solid; border-color: #ffd700;background:rgba(0,0,0,0); color: #ffd700;';
+//display :none 	var
+					var button_style="display :none";
+					//users_info.child(userId).on('value', function(seller_data){
+					var Seller_img_id = 'uploadedSellerListImage'+childData.number;
+					
+					id_array.push(Seller_img_id);
+					productHeaders.push(childData.header);
+					
+				//	var seller_data_val = seller_data.val();
+					count = count + 1;
+					var button_id = 'feed_id' + count;
+					var nameId='name_id'+count;
+					
+				    var listClass="list-group-item";
+
+					$("#feeds").append("<button id='"+button_id+"' style='"+button_style+"' ><li  style='"+style+"'    class='"+listClass+"'>"
+						+ "<img  src='images/profile.png'    id='"+Seller_img_id+"' style='"+img_style+"' /><br />"
+					//	+"<small>" + seller_data_val.first_name+ ' '+ seller_data_val.last_name +  " sells... </small><br />" 
+						+ "<small id='"+nameId+"'></small><br />"
+						+ "<img  src='images/product.jpg'    id='"+Product_img_id+"' style='"+img_style+"' /><br />"
+					//	+ "<small>" + childData.header + "</small><br />" 
+					+ '</li></button>');	
+					
+			
+
+					if(childData.hasImage == 1)
+				{
+				
+				
+				var storage_path = 'product_images/'+userId+'/'+childData.number;
+					setFeedListImage(storage_path, Product_img_id);
+				}
+				//	});
+				});
+
+				
+				
+				//if(count === data.length)
+					//return count;
+			  });
+			$("#feeds").scrollTop($('#feeds').height());
+			
+		//	wait(8500);
+		//	setDisplay('feed_id'+1);
+resolve(myFunctToRunAfter());
+		})
+		
+		});
+		//wait(8500);
+		//setDisplay('feed_id1');
+		
+		//return count;
+  }
   
   
   
-  
-  
+   function setFeedListImage(storage_path,data_path) {
+
+	//$("#uploadBtn").text('uploading...');
+			var storageRef = firebase.storage().ref();
+			var email = firebase.auth().currentUser.email;
+			
+			var name = storageRef.child(storage_path);
+					name.getDownloadURL().then(function(url){
+					var img = document.getElementById(data_path);
+
+					if(url != null){
+						img.src = url;
+						}
+						else{
+						//wait(2500);
+						storageRef.child(storage_path).on("value", function(snapshot) {
+						name.getDownloadURL().then(function(url){
+						img.src = url;
+						});
+						
+						
+						});
+						}
+						
+					}).catch(function(err){ /*console.log(err)*//*wait(2500);stam2(userId,number)*/; });
+			}
+			
+			
+			
+			
+			
+			
+   function wait(ms){
+   var start = new Date().getTime();
+   var end = start;
+   while(end < start + ms) {
+     end = new Date().getTime();
+  }
+}
+
+
+
+
+function arrayContains(array, value)
+{
+for(var i=0; i< array.length ; i++)
+	if(array[i] === value)
+		return true;
+return false;
+}
+
+function randomNum(min, max) {
+var n = [];
+for(var i=0;i<5;i++){
+var value = Math.floor(Math.random() * max) + min;
+if(arrayContains(n,value))
+{
+	i=i-1;
+}
+else
+n.push(value);
+}
+return n;
+}
+
+
+
+
+
+/*
+
+	ref.once('value')
+  .then(function(snapshot) {
+    var myFunctToRunAfter = function () {
+      console.info('RUN AFTER THE LOOP');
+    }
+    
+    return new Promise(function(resolve, reject) {
+      snapshot.forEach(function(child) {
+        console.log('I am a child ' + child.val())
+      })
+      // Call the function after the loop 
+      resolve(myFunctToRunAfter())
+    })
+    .then(() => {
+      // I could do something here 
+      console.log(snapshot.val())
+      console.info('RUN LAST')
+    })
+  })
+*/
+
+
+
+
+
+
+
+
+
 </script>
 
 
