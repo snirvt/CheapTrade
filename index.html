@@ -716,7 +716,7 @@
 			users_info.child(seller_uid).on('value', function(seller_data){
 			
 			seller_data_val = seller_data.val();
-			setListImage(seller_data_val.email, id_array[childSnapshot-1]);
+			setListImage(seller_data_val.email, id_array[childSnapshot]);
 			console.log('seller_data_val.email',seller_data_val.email);
 			
 			//console.log('id_array[childSnapshot]',id_array[childSnapshot]);
