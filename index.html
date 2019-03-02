@@ -698,7 +698,7 @@
   var id_array =[];
   var productHeaders=[];
   var myFunctToRunAfter = function () {
-  numArray=randomNum(1, count);
+  numArray=randomNum(0, count-1);
   console.log(numArray);
   //setDisplay('feed_id1');
    //setDisplay('feed_id2');
@@ -712,16 +712,16 @@
 			setDisplay('feed_id'+childSnapshot);
 			
 			var nameId = 'name_id'+childSnapshot;
-			var seller_uid = n[childSnapshot-1].uid;
+			var seller_uid = n[childSnapshot].uid;
 			users_info.child(seller_uid).on('value', function(seller_data){
 			
 			seller_data_val = seller_data.val();
 			setListImage(seller_data_val.email, id_array[childSnapshot-1]);
 			console.log('seller_data_val.email',seller_data_val.email);
 			
-			//console.log('id_array[childSnapshot]',id_array[childSnapshot-1]);
+			//console.log('id_array[childSnapshot]',id_array[childSnapshot]);
 
-			document.getElementById(nameId).innerHTML = seller_data_val.first_name+ ' '+ seller_data_val.last_name +  " sells " + productHeaders[childSnapshot-1]; 			
+			document.getElementById(nameId).innerHTML = seller_data_val.first_name+ ' '+ seller_data_val.last_name +  " sells " + productHeaders[childSnapshot]; 			
 			
 			var page = 'visitorView.html' + '#' + seller_uid;
 			document.getElementById(btn_id).setAttribute('onclick','moveToPage("'+page+'")');
