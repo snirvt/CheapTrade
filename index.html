@@ -338,11 +338,34 @@
   {
   if(str1 == null || str2 == null || str1=='undefined' || str2 =='undefined')
   return false;
-  if(str1.localeCompare(str2) == 0)
-	return true;
-  else
+  
+  var split_arr1 = str1.split(" ");
+  var split_arr2 = str2.split(" ");
+  
+  
+  for(var i = 0; i<split_arr1.length ; i++)
+  {
+	for(var j = 0; j< split_arr2.length ; j++)
+	{
+		if(split_arr1[i].localeCompare(split_arr2[j]) == 0)
+			return true;
+	}
+  }
+ 
+  
+  //if(str1.localeCompare(str2) == 0)
+	//return true;
+  //else
 	return false;
   }
+  
+  
+  $('input').on("keypress", function(e) {
+            if (e.keyCode == 13) {
+                $("#serachSellerOkButton").click();
+                return false;
+            }
+        });
   
   
   
