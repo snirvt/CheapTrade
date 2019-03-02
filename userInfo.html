@@ -269,7 +269,7 @@
   
   console.log('showFriendsList', userId);
   
-  
+  var count=0;
   var messagesRef = firebase.database().ref('friends_list');
   var users_info = firebase.database().ref('users_info');
 
@@ -278,7 +278,7 @@
 			data.forEach(function(childSnapshot) {  
 				let childData = childSnapshot.val();
 					var friend_uid =  childData.uid;
-					
+					count =count +1;
 					users_info.child(friend_uid).on('value', function(dataData){
 					let childDataData = dataData.val();
 
@@ -294,7 +294,7 @@
 					$("#friends").append("<button id='"+button_id+"'><li  style='"+style+"'  class='"+listClass+"'>"
 						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+img_style+"' /><br />"
 						+ "<small>" + childDataData.first_name + ' ' + childDataData.last_name + "</small><br />" 
-						+ '</li></button>');
+						+ '</li></button><br />');
 				
 				var storage_path = 'profile_images/'+friend_email;
 				var data_path = img_id;
@@ -303,6 +303,8 @@
 					
 					});		
 			$("#friends").scrollTop($('#friends').height());
+			if(count ==0)
+			$("#friends").append("<h3 style='color: #ffd700'>no friends here... :( </h3>");
 		});
 		});
   
@@ -410,24 +412,34 @@
   {
   var userId = firebase.auth().currentUser.uid;
   var messagesRef = firebase.database().ref('wishList');
-  
+  var count = 0;
   messagesRef.child(userId).on('value', function(data){ 
 			$("#wishes").empty();
 			data.forEach(function(childSnapshot) { 
 			
+			count = count+1;
 				let childData = childSnapshot.val();
 					var img_id = 'uploadedProductListImage'+childData.number;
 					var button_id='delete_button'+childData.number;
 					var style = "width: 250px; height: 250px ; border-style: solid; border-color: #00b300";
-					$("#wishes").append('<li class="list-group-item">' 
-						+ "<small>" + childData.header + "</small><br />" 
-						+"<button id='"+button_id+"'>delete item</button>"
+					
+					var style = '; border-style: solid; border-color: #ffd700;background:rgba(0,0,0,0); color: #ffd700;';
+					var listClass="list-group-item";
+					var btn_class="login100-form-btn" ;
+					var btn_style = "font-size: 20px;";
+					
+					
+					$("#wishes").append("<li style ='"+style+"' class='list-group-item'>" 
+						+ "<h3>" + childData.header + "</h3><br />" 
+						+"<button style='"+btn_style+"' class='"+btn_class+"' id='"+button_id+"'>delete item</button>"
 					+ '</li>');
 								 
 				document.getElementById(button_id).setAttribute('onclick','deleteWish("'+childData.number+'")');
 
 			  });
 			$("#wishes").scrollTop($('#wishes').height());
+			if(count ==0)
+			$("#wishes").append("<h3 style='color: #ffd700'>no wishes yet...</h3>");
 		});
   
   
@@ -440,23 +452,29 @@
   {
   var userId = firebase.auth().currentUser.uid;
   var messagesRef = firebase.database().ref('products_info');
-  
+  var count = 0;
   messagesRef.child(userId).on('value', function(data){ 
 			$("#items").empty();
 			data.forEach(function(childSnapshot) {
 			// console.log("baba");
-  
+		count = count +1;
 				let childData = childSnapshot.val();
 				
 					var img_id = 'uploadedProductListImage'+childData.number;
-					var button_id='delete_button'+childData.number;
-					var style = "width: 250px; height: 250px ; border-style: solid; border-color: #00b300";
+					var button_id='delete_button'+childData.number;					
+					var style = '; border-style: solid; border-color: #ffd700;background:rgba(0,0,0,0); color: #ffd700;';
+					var img_style = "width: 250px; height: 250px ; border-style: solid; border-color: #ffd700";
+					var listClass="list-group-item";
+					var btn_class="login100-form-btn" ;
+					var btn_style = "font-size: 20px;";
+
+					
 					var Fun = 'doFunction';
-					$("#items").append('<li class="list-group-item">' 
-						+ "<img  src='images/product.jpg'    id='"+img_id+"' style='"+style+"' /><br />"
-						+ "<small>" + childData.header + "</small><br />" 
+					$("#items").append("<li   style='"+style+"'     class='"+listClass+"'>" 
+						+ "<img  src='images/product.jpg'    id='"+img_id+"' style='"+img_style+"' /><br />"
+						+ "<h3>" + childData.header + "</h3><br />" 
 						+ "<h5 style='margin: 5px 10px !important;'>" + childData.moreInfo + "</h5>"
-						+"<button id='"+button_id+"'>delete item</button>"
+						+"<button style = '"+btn_style+"' class = '"+btn_class+"' id='"+button_id+"'>delete item</button>"
 					+ '</li>');
 				//}
 								 
@@ -473,6 +491,8 @@
 				}
 			  });
 			$("#items").scrollTop($('#items').height());
+			if(count ==0)
+			$("#items").append("<h3 style='color: #ffd700'>no items yet...</h3>");
 		});
   }
   
@@ -973,7 +993,7 @@ return 'aa';
 	{
     setVisibiltyTo('myWishList','visible');
 	setVisibiltyTo('addWishMenu','hidden');
-	wait(4500);
+	//wait(1500);
 	getWishList();
 
 	}
