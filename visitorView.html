@@ -228,7 +228,7 @@ var uid = window.location.hash.substring(1);
 			
 			//if(messagesRef.exists())
 				
-			
+			$("#chat_button").click();
 			firebase.database().ref('users_info/' + uid).once('value').then(function(data){
 			var val = data.val();
 			console.log("uid " + uid);
