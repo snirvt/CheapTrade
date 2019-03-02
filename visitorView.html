@@ -144,17 +144,17 @@ send friend request
 </div>
 
 
-<div id="chat" class="container" style="width: 600px ;visibility: hidden; position: absolute; top: 100px; margin-left:60%">
+<div id="chat" class="container" style="width: 300px ;visibility: hidden; position: absolute; top: 100px; right:0px">
 	
-	<div class="row" >
-		<div class="col-md-6" style="height: 350px !Important; overflow-y: scroll;border: 1px splid #f0f0f0;">
+	<div  >
+		<div  style="height: 350px !Important; overflow-y: scroll;border: 1px splid #f0f0f0;">
 			<ul class="list-group" id="messages">
 				<li style="margin-top: 35%; border: none; text-align: center; font-size: 40px;">Loading...</li>
 			</ul>
 		</div>
 	</div>
-	<div class="row" style="margin-top: 5px; ">
-		<div class="col-md-6" style="background-color: #e0e0e0; padding: 10px;border-radius: 10px;border: 1px solid #e0e0e0;">
+	<div  style="margin-top: 5px; ">
+		<div  style="background-color: #e0e0e0; padding: 10px;border-radius: 10px;border: 1px solid #e0e0e0;">
 			<input class="form-control" type="text" placeholder="enter your message" id="messageInput"/> 
 			<button id="sendBtn" class="btn btn-success" style="margin-top: 10px;width: 100%;">send</button>
 			<label id="uploadBtn" class="btn btn-primary btn-file" style="margin-top: 10px; width: 100%;">
@@ -472,42 +472,33 @@ messagesRef = firebase.database().ref().child('notifications/'+uid+'/friend_requ
   var userId = uid;//firebase.auth().currentUser.uid;
   
   var messagesRef = firebase.database().ref('products_info');
-  
+  var count=0;
   messagesRef.child(userId).on('value', function(data){ 
 			$("#items").empty();
 			data.forEach(function(childSnapshot) {
 			// console.log("baba");
-  
+			count = count+1;
 				let childData = childSnapshot.val();
-				//console.log(childData);
-				/*if(childData.type == "image"){
-					$("#messages").append('<li class="list-group-item">' 
-						+ "<small>" + childData.sender + "</small><br />" 
-						+ "<img src='" + childData.message + "'/><br />"
-						+ "<small>" + childData.timestamp + "</small>"
-					+ '</li>');
-				} else{*/
-				//+ "<img src='" + stam(userId,childData.number) + "'/><br />"
+				var style = '; border-style: solid; border-color: #ffd700;background:rgba(0,0,0,0); color: #ffd700;';
+			    var img_style = "width: 250px; height: 250px ; border-style: solid; border-color: #ffd700";
+		
 					var img_id = 'uploadedProductListImage'+childData.number;
 					var button_id='delete_button'+childData.number;
-					var style = "width: 250px; height: 250px ; border-style: solid; border-color: #ffd700";
 					var Fun = 'doFunction';
-					$("#items").append('<li class="list-group-item">' 
-						+ "<img  src='images/product.jpg'    id='"+img_id+"' style='"+style+"' /><br />"
-						+ "<small>" + childData.header + "</small><br />" 
+					$("#items").append("<li style='"+style+"' class='list-group-item'>"
+						+ "<img  src='images/product.jpg'    id='"+img_id+"' style='"+img_style+"' /><br />"
+						+ "<h3>" + childData.header + "</h3><br />" 
 						+ "<h5 style='margin: 5px 10px !important;'>" + childData.moreInfo + "</h5>"
-					//	+"<button id='"+button_id+"'>delete item</button>"
 					+ '</li>');
-				//}
-								 
-				// document.getElementById(button_id).setAttribute('onclick','deleteProduct("'+childData.number+'",'+userId+')');
-			//	document.getElementById(button_id).setAttribute('onclick','deleteProduct("'+childData.number+'")');
-
 				
 				if(childData.hasImage == 1)
 					setListImage(userId,childData.number);
 			  });
+			
 			$("#items").scrollTop($('#items').height());
+		
+		if(count ==0)
+			$("#items").append("<h3 style='color: #ffd700'>no items here...</h3>");
 		});
   
   
