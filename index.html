@@ -430,7 +430,7 @@
    var userId = firebase.auth().currentUser.uid;
    var messagesRef = firebase.database().ref('notifications');
    messagesRef.child(userId +'/massages/' + friend_id).remove();
-   moveToPage(button_id);
+  // moveToPage(button_id);
 	
   }
  
