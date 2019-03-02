@@ -468,6 +468,8 @@
 		});
 		});
 	  $("#notifications").scrollTop($('#notifications').height());
+	  if(count == 0)
+		$("#notifications").append("<h3 style='color: #ffd700'>no new massages...</h3>");
 	});
   }
   
@@ -530,6 +532,11 @@
 		
 		
 	  $("#notifications").scrollTop($('#notifications').height());
+	  
+	  
+	  if(count == 0)
+		$("#notifications").append("<h3 style='color: #ffd700'>no matches found...</h3>");
+		
 
 	});
 	
@@ -548,6 +555,8 @@
   var userId = firebase.auth().currentUser.uid;
   var messagesRef = firebase.database().ref();
   var count = 0;
+  var users_info = firebase.database().ref('users_info');
+
 	messagesRef.child('notifications/' + userId +'/friend_requests').on('value', function(data){ 
 	console.log('child: ', data);
 	$("#notifications").empty();
@@ -555,6 +564,9 @@
 		let childData = childSnapshot.val();
 		//if(equals(childData.email,Seller_name) || equals(childData.first_name,Seller_name) || equals(childData.last_name,Seller_name))
 		//{
+		users_info.child(childData.sender).on('value', function(dataData){
+		let childDataData = dataData.val();
+
 			count = count + 1;
 			console.log('kaka: ', childSnapshot);
 			
@@ -572,7 +584,7 @@
 			$("#notifications").append("<button id='"+button_id+"'><li   style='"+style+"'     class='"+listClass+"'>"
 						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+img_style+"' /><br />"
 						+ "<small>" + childData.email + "</small><br />" 
-						+ "<small>" + childData.first_name + ' ' + childData.last_name + "</small><br />" 
+						+ "<small>" + childDataData.first_name + ' ' + childDataData.last_name + "</small><br />" 
 						//+"<button id='"+button_id+"'>click</button>"
 					+ '</li></button>'
 					+"<button id='"+approveId+"' class='login100-form-btn'> approve</button>"
@@ -581,7 +593,7 @@
 			setListImage(childData.email,img_id);
 			document.getElementById(button_id).setAttribute('onclick','moveToPage("'+button_id+'")');
 			document.getElementById(approveId).setAttribute('onclick','approveFriend("'+childData.sender+'")');
-
+});
 		//}
 		
 		});
@@ -590,10 +602,8 @@
 	  var style = ' ;background:rgba(0,0,0,0); color: #ffd700;';
 
 	  if(count == 0)
-		$("#notifications").append("<li   style='"+style+"'>"
-		+'no new friend requests... :('
-		+ '</li>'
-		);
+		$("#notifications").append("<h3 style='color: #ffd700'>no new friend requests...</h3>");
+		
 
 	  
 	});
@@ -646,7 +656,8 @@
 		
 		});
 	  $("#sellers").scrollTop($('#sellers').height());
-
+			if(count ==0)
+			$("#sellers").append("<h3 style='color: #ffd700'>no sellers found...</h3>");
 	});
   }
   
