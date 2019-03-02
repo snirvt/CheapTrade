@@ -168,7 +168,7 @@
 		<div id="addItemMenu" style ="position: absolute; top: 0px; visibility: hidden ;">
 		<div style = "position: absolute; top: 0px; left: 0px; ">
 
-		<img id = "product_image" src ="images/profile.png" style = "margin-left: 15px;margin-top: 15px; width: 250px; height: 250px ; border-style: solid; border-color: #ffd700;">
+		<img id = "product_image" src ="images/product.jpg" style = "margin-left: 15px;margin-top: 15px; width: 250px; height: 250px ; border-style: solid; border-color: #ffd700;">
 		</img>
 		</div>
 		<div style="position: relative ; top: 270px; ">
@@ -302,7 +302,7 @@
 					document.getElementById(button_id).setAttribute('onclick','moveToPage("'+button_id+'")');
 					
 					});		
-			$("#friends").parent().scrollTop($('#friends').height());
+			$("#friends").scrollTop($('#friends').height());
 		});
 		});
   
@@ -393,7 +393,7 @@
 	
 	
 	var img = document.getElementById("product_image");
-	img.src = "images/profile.png";
+	img.src = "images/product.jpg";
 	
   });
   
@@ -427,7 +427,7 @@
 				document.getElementById(button_id).setAttribute('onclick','deleteWish("'+childData.number+'")');
 
 			  });
-			$("#wishes").parent().scrollTop($('#wishes').height());
+			$("#wishes").scrollTop($('#wishes').height());
 		});
   
   
@@ -447,21 +447,13 @@
 			// console.log("baba");
   
 				let childData = childSnapshot.val();
-				//console.log(childData);
-				/*if(childData.type == "image"){
-					$("#messages").append('<li class="list-group-item">' 
-						+ "<small>" + childData.sender + "</small><br />" 
-						+ "<img src='" + childData.message + "'/><br />"
-						+ "<small>" + childData.timestamp + "</small>"
-					+ '</li>');
-				} else{*/
-				//+ "<img src='" + stam(userId,childData.number) + "'/><br />"
+				
 					var img_id = 'uploadedProductListImage'+childData.number;
 					var button_id='delete_button'+childData.number;
 					var style = "width: 250px; height: 250px ; border-style: solid; border-color: #00b300";
 					var Fun = 'doFunction';
 					$("#items").append('<li class="list-group-item">' 
-						+ "<img  src='images/profile.png'    id='"+img_id+"' style='"+style+"' /><br />"
+						+ "<img  src='images/product.jpg'    id='"+img_id+"' style='"+style+"' /><br />"
 						+ "<small>" + childData.header + "</small><br />" 
 						+ "<h5 style='margin: 5px 10px !important;'>" + childData.moreInfo + "</h5>"
 						+"<button id='"+button_id+"'>delete item</button>"
@@ -480,15 +472,8 @@
 					setListImage(storage_path, data_path);
 				}
 			  });
-			$("#items").parent().scrollTop($('#items').height());
+			$("#items").scrollTop($('#items').height());
 		});
-  
-  
-  
-  
-  
-  
-
   }
   
   
@@ -1001,7 +986,7 @@ return 'aa';
 	tempImage = null;
 	document.getElementById('productHeader').value = "";
 	document.getElementById('productTextArea').value = "";
-	document.getElementById('product_image').src = "images/profile.png";	
+	document.getElementById('product_image').src = "images/product.jpg";	
 	wait(3500);
 	getItemList();
 
