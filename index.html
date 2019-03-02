@@ -457,10 +457,10 @@
 	$("#notifications").empty();
 		data.forEach(function(childSnapshot) {
 		let childData = childSnapshot.val();
-		
+		count = count + 1;
 		users_info.child(childData.sender).on('value', function(dataData){
 		let childDataData = dataData.val();
-			count = count + 1;
+			
 			console.log('kaka: ', childSnapshot);
 			
 			var style = '; border-style: solid; border-color: #ffd700;background:rgba(0,0,0,0); color: #ffd700;';
